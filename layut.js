@@ -1,29 +1,28 @@
-
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: "#4F46E5",
-              secondary: "#7C3AED",
-            },
-            borderRadius: {
-              none: "0px",
-              sm: "4px",
-              DEFAULT: "8px",
-              md: "12px",
-              lg: "16px",
-              xl: "20px",
-              "2xl": "24px",
-              "3xl": "32px",
-              full: "9999px",
-              button: "8px",
-            },
-            fontFamily: {
-              hebrew: ["Heebo", "sans-serif"],
-            },
-          },
-        },
-      };
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: "#4F46E5",
+        secondary: "#7C3AED",
+      },
+      borderRadius: {
+        none: "0px",
+        sm: "4px",
+        DEFAULT: "8px",
+        md: "12px",
+        lg: "16px",
+        xl: "20px",
+        "2xl": "24px",
+        "3xl": "32px",
+        full: "9999px",
+        button: "8px",
+      },
+      fontFamily: {
+        hebrew: ["Heebo", "sans-serif"],
+      },
+    },
+  },
+};
 
 // === Scroll Animations ===
 document.addEventListener("DOMContentLoaded", function () {
@@ -102,7 +101,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         setTimeout(() => {
-          const messageElement = result.querySelector(".success-message, .error-message");
+          const messageElement = result.querySelector(
+            ".success-message, .error-message"
+          );
           if (messageElement) messageElement.classList.add("show");
         }, 100);
       }, 1500);
@@ -153,120 +154,135 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("scroll", requestTick);
 });
 
-// === Testimonials ===
+// === Testimonials Carousel (User-Provided Logic) ===
 document.addEventListener("DOMContentLoaded", function () {
-  const testimonials = [
+  const testimonialsData = [
     {
-      text: "הגעתי לטיפול עם המון ספקות וחששות, אבל מהר מאוד הרגשתי שאני במקום הנכון. התהליך היה עמוק, מרגש ובעיקר משנה חיים.",
-      author: "יעל כהן",
+      quote: "אברהם היקר, תודה על מפגש מרפא של ממש. עדיין קשה לי לעכל. מרגיש שהתגברתי על הרגלים או פחדים של שנות חיים. והכל באופן הפשוט ביותר ולכאורה טריויאלי. תודה על לימוד שפה חדשה, שכל אחד חייב להכיר."
     },
     {
-      text: "לא האמנתי שאפשר לעשות שינוי כל כך משמעותי בזמן כל כך קצר. אני מרגיש אדם חדש, עם יותר ביטחון ושמחת חיים.",
-      author: "דוד לוי",
+      quote: "אתה מהיחידים שהרגשתי בנוח להיפתח ולדבר גלוי ורציני ככה. ושוב תודה לך, כי תשובות כאלה וסבלנות לא מוצא אצל כל אחד"
     },
     {
-      text: "תרפיית המימדים פתחה לי דלת לעולם חדש של אפשרויות. אני מודה על כל רגע בתהליך.",
-      author: "שרה ישראלי",
-    },
+      quote: "אחרי הטיפול השלישי שלנו, חשבתי על המצב שהגעתי אליך ועל איך שאני עכשיו. אמנם יש עוד עבודה . אבל שהייתי מטופל על ידי פסיכולוג לא ראיתי שינויים בכלל גם אחרי 3 חודשים שהייתי מקפיד ללכת. אז אחי אני ממש מודה לך ושיהיה ראש חודש טוב ומבורך !"
+    }
   ];
 
-  const testimonialsContainer = document.querySelector(".testimonials-container");
-  const dotsContainer = document.querySelector(".testimonial-dots");
-  const prevBtn = document.querySelector(".prev-btn");
-  const nextBtn = document.querySelector(".next-btn");
+  // DOM Elements
+  const testimonialsContainer = document.getElementById('testimonialsContainer');
+  const navDots = document.getElementById('navDots');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
 
-  if (testimonials.length > 0) {
-    testimonialsContainer.innerHTML = testimonials
-      .map(
-        (testimonial) => `
-      <div class="testimonial-card">
-        <p class="testimonial-text">"${testimonial.text}"</p>
-        <p class="testimonial-author">- ${testimonial.author}</p>
-      </div>
-    `
-      )
-      .join("");
+  if (!testimonialsContainer) return;
 
-    dotsContainer.innerHTML = testimonials
-      .map((_, i) => `<button class="dot ${i === 0 ? "active" : ""}"></button>`)
-      .join("");
+  let currentIndex = 0;
+  let autoScrollInterval;
+  const autoScrollDelay = 8000; // 8 seconds
 
-    const testimonialCards = document.querySelectorAll(".testimonial-card");
-    const dots = document.querySelectorAll(".dot");
-    let currentTestimonial = 0;
-    let autoSlideInterval;
-
-    function showTestimonial(index) {
-      testimonialCards.forEach((testimonial, i) => {
-        testimonial.classList.remove("active");
-      });
-      testimonialCards[index].classList.add("active");
-
-      dots.forEach((dot, i) => {
-        dot.classList.toggle("active", i === index);
-      });
-      currentTestimonial = index;
-    }
-
-    function next() {
-      const nextIndex = (currentTestimonial + 1) % testimonialCards.length;
-      showTestimonial(nextIndex);
-    }
-
-    function prev() {
-      const prevIndex = (currentTestimonial - 1 + testimonialCards.length) % testimonialCards.length;
-      showTestimonial(prevIndex);
-    }
-
-    function startAutoSlide() {
-      autoSlideInterval = setInterval(next, 5000);
-    }
-
-    function stopAutoSlide() {
-      clearInterval(autoSlideInterval);
-    }
-
-    nextBtn.addEventListener("click", () => {
-      stopAutoSlide();
-      next();
-      startAutoSlide();
-    });
-
-    prevBtn.addEventListener("click", () => {
-      stopAutoSlide();
-      prev();
-      startAutoSlide();
-    });
-
-    dots.forEach((dot, i) => {
-      dot.addEventListener("click", () => {
-        stopAutoSlide();
-        showTestimonial(i);
-        startAutoSlide();
-      });
-    });
-
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    testimonialsContainer.addEventListener("touchstart", (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-      stopAutoSlide();
-    });
-
-    testimonialsContainer.addEventListener("touchend", (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      if (touchEndX < touchStartX) {
-        next();
-      }
-      if (touchEndX > touchStartX) {
-        prev();
-      }
-      startAutoSlide();
-    });
-
-    showTestimonial(0);
-    startAutoSlide();
+  function init() {
+    renderTestimonials();
+    renderNavigationDots();
+    updateActiveElements();
+    startAutoScroll();
+    setupEventListeners();
   }
-});
 
+  function renderTestimonials() {
+    testimonialsContainer.innerHTML = testimonialsData.map((testimonial, index) => {
+      return `
+        <div class="testimonial-card" data-index="${index}">
+          <p class="testimonial-text">"${testimonial.quote}"</p>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderNavigationDots() {
+    navDots.innerHTML = testimonialsData.map((_, index) => {
+      return `<div class="dot" data-index="${index}"></div>`;
+    }).join('');
+
+    navDots.querySelectorAll('.dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        navigateToTestimonial(parseInt(dot.dataset.index));
+      });
+    });
+  }
+
+  function updateActiveElements() {
+    // Update active card
+    document.querySelectorAll('.testimonial-card').forEach((card, index) => {
+      if (index === currentIndex) {
+        card.classList.add('active');
+      } else {
+        card.classList.remove('active');
+      }
+    });
+
+    // Update active dot
+    document.querySelectorAll('.dot').forEach((dot, index) => {
+      if (index === currentIndex) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+  }
+
+  function scrollToCurrentCard() {
+    const cards = document.querySelectorAll('.testimonial-card');
+    if (cards[currentIndex]) {
+      const card = cards[currentIndex];
+      const container = testimonialsContainer;
+      // Calculate the scroll position to center the card
+      const scrollPosition = card.offsetLeft - (container.offsetWidth / 2) + (card.offsetWidth / 2);
+
+      container.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth',
+      });
+    }
+  }
+
+  function navigateToTestimonial(index) {
+    currentIndex = index;
+    updateActiveElements();
+    scrollToCurrentCard();
+    resetAutoScroll();
+  }
+
+  function navigatePrev() {
+    currentIndex = (currentIndex - 1 + testimonialsData.length) % testimonialsData.length;
+    updateActiveElements();
+    scrollToCurrentCard();
+    resetAutoScroll();
+  }
+
+  function navigateNext() {
+    currentIndex = (currentIndex + 1) % testimonialsData.length;
+    updateActiveElements();
+    scrollToCurrentCard();
+    resetAutoScroll();
+  }
+
+  function startAutoScroll() {
+    clearInterval(autoScrollInterval);
+    autoScrollInterval = setInterval(navigateNext, autoScrollDelay);
+  }
+
+  function resetAutoScroll() {
+    clearInterval(autoScrollInterval);
+    startAutoScroll();
+  }
+
+  function setupEventListeners() {
+    prevBtn.addEventListener('click', navigatePrev);
+    nextBtn.addEventListener('click', navigateNext);
+
+    testimonialsContainer.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
+    testimonialsContainer.addEventListener('mouseleave', startAutoScroll);
+  }
+
+  init();
+});
