@@ -153,54 +153,265 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("scroll", requestTick);
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-const track = document.querySelector('.testimonials-track');
-const cards = document.querySelectorAll('.testimonial-card');
-const leftBtn = document.querySelector('.arrow-btn.left-4');
-const rightBtn = document.querySelector('.arrow-btn.right-4');
-let index = 0;
-let interval;
+const testimonials = [
+  {
+    id: 1,
+    quote:
+      'The epitome of excellence in service delivery. Their attention to detail and commitment to perfection mirrors our own standards at Rothschild & Co. The strategic insights provided have been invaluable to our private wealth division.',
+    name: 'Eleanor Van der Linden',
+    title: 'Managing Director, Rothschild & Co',
+    avatar:
+      'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop&crop=faces',
+    rating: 5
+  },
+  {
+    id: 2,
+    quote:
+      'Working with their team has been nothing short of transformative for our luxury hospitality group. They understand the nuances of serving discerning clientele at the highest level. The results have exceeded our most ambitious projections.',
+    name: 'Alexander Laurent',
+    title: 'CEO, Auberge Resorts Collection',
+    avatar:
+      'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=faces',
+    rating: 5
+  },
+  {
+    id: 3,
+    quote:
+      'In the world of haute horlogerie, precision and craftsmanship are paramount. Their approach to digital transformation for our brand maintained these values while bringing us into the modern era without compromising our heritage.',
+    name: 'Claire Beaumont',
+    title: 'Digital Director, Patek Philippe',
+    avatar:
+      'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=faces',
+    rating: 5
+  },
+  {
+    id: 4,
+    quote:
+      'The discretion and sophistication of their service matches what we expect from our most exclusive properties. Their team operates with the same level of professionalism we demand from our staff at The Ritz Paris.',
+    name: 'Henri Delacroix',
+    title: 'General Manager, The Ritz Paris',
+    avatar:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=faces',
+    rating: 5
+  },
+  {
+    id: 5,
+    quote:
+      'As a family office managing ultra-high-net-worth individuals, we require partners who understand the need for absolute confidentiality alongside flawless execution. They have consistently delivered beyond our expectations.',
+    name: 'Victoria Kensington',
+    title: 'Principal, Windsor Family Office',
+    avatar:
+      'https://images.unsplash.com/photo-1619895862022-09114b41f16f?w=200&h=200&fit=crop&crop=faces',
+    rating: 5
+  },
+];
 
+// DOM Elements
+const testimonialsContainer = document.getElementById('testimonialsContainer');
+const navDots = document.getElementById('navDots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
 
-function updateSlide() {
-track.style.transform = `translateX(${-index * 100}%)`;
-cards.forEach((card, i) => {
-card.classList.toggle('active', i === index);
-});
+// Configuration
+let currentIndex = 0;
+let autoScrollInterval;
+const scrollSpeed = 400;
+const autoScrollDelay = 10000; // 10 seconds
+
+// Initialize
+function initTestimonials() {
+  renderTestimonials();
+  renderNavigationDots();
+  setActiveDot();
+  startAutoScroll();
+  setupEventListeners();
 }
 
+// Render Testimonials
+function renderTestimonials() {
+  testimonialsContainer.innerHTML = '';
 
-function nextSlide() {
-index = (index + 1) % cards.length;
-updateSlide();
+  testimonials.forEach((testimonial, index) => {
+    const testimonialElement = document.createElement('div');
+    testimonialElement.className = `testimonial-card ${
+      index === currentIndex ? 'active' : ''
+    }`;
+    testimonialElement.dataset.index = index;
+
+    // Generate star rating
+    const stars = Array(5)
+      .fill(0)
+      .map(
+        (_, i) =>
+          `<i class="star ${
+            i < testimonial.rating ? 'filled fas fa-star' : 'far fa-star'
+          }"></i>`
+      )
+      .join('');
+
+    testimonialElement.innerHTML = `
+    <div class="quote-icon">
+    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 12C7 14.7614 9.23858 17 12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7V3C16.4183 3 20 6.58172 20 11C20 15.4183 16.4183 19 12 19C7.58172 19 4 15.4183 4 11H7Z" fill="currentColor"/>
+    </svg>
+</div>
+<p class="testimonial-content">${testimonial.quote}</p>
+<div class="client-info">
+    <img src="${testimonial.avatar}" alt="${
+testimonial.name
+}" class="client-avatar">
+    <div class="client-details">
+        <h4>${testimonial.name}</h4>
+        <p>${testimonial.title}</p>
+        <div class="rating">${stars}</div>
+    </div>
+</div>
+            `;
+
+    testimonialsContainer.appendChild(testimonialElement);
+  });
+
+  // Center the active card
+  scrollToCurrentCard();
 }
 
+// Render Navigation Dots
+function renderNavigationDots() {
+  navDots.innerHTML = '';
 
-function prevSlide() {
-index = (index - 1 + cards.length) % cards.length;
-updateSlide();
+  testimonials.forEach((_, index) => {
+    const dot = document.createElement('div');
+    dot.className = `dot ${index === currentIndex ? 'active' : ''}`;
+    dot.dataset.index = index;
+    dot.addEventListener('click', () => {
+      navigateToTestimonial(index);
+    });
+    navDots.appendChild(dot);
+  });
 }
 
+// Set Active Dot
+function setActiveDot() {
+  document.querySelectorAll('.dot').forEach((dot, index) => {
+    if (index === currentIndex) {
+      dot.classList.add('active');
+    } else {
+      dot.classList.remove('active');
+    }
+  });
 
+  document.querySelectorAll('.testimonial-card').forEach((card, index) => {
+    if (index === currentIndex) {
+      card.classList.add('active');
+    } else {
+      card.classList.remove('active');
+    }
+  });
+}
+
+// Navigation Functions
+function navigateToTestimonial(index) {
+  currentIndex = index;
+  renderTestimonials();
+  setActiveDot();
+  resetAutoScroll();
+}
+
+function navigatePrev() {
+  currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+  renderTestimonials();
+  setActiveDot();
+  resetAutoScroll();
+}
+
+function navigateNext() {
+  currentIndex = (currentIndex + 1) % testimonials.length;
+  renderTestimonials();
+  setActiveDot();
+  resetAutoScroll();
+}
+
+// Smooth scroll to current card
+function scrollToCurrentCard() {
+  const cards = document.querySelectorAll('.testimonial-card');
+  if (cards[currentIndex]) {
+    const card = cards[currentIndex];
+    const container = testimonialsContainer;
+    const cardWidth = card.offsetWidth;
+    const scrollPosition =
+      card.offsetLeft - container.offsetWidth / 2 + cardWidth / 2;
+
+    container.scrollTo({
+      left: scrollPosition,
+      behavior: 'smooth',
+    });
+  }
+}
+
+// Auto-scroll functionality
 function startAutoScroll() {
-interval = setInterval(nextSlide, 5000);
+  autoScrollInterval = setInterval(navigateNext, autoScrollDelay);
 }
 
-
-function stopAutoScroll() {
-clearInterval(interval);
+function resetAutoScroll() {
+  clearInterval(autoScrollInterval);
+  startAutoScroll();
 }
 
+// Event Listeners
+function setupEventListeners() {
+  prevBtn.addEventListener('click', navigatePrev);
+  nextBtn.addEventListener('click', navigateNext);
 
-rightBtn.addEventListener('click', nextSlide);
-leftBtn.addEventListener('click', prevSlide);
+  // Pause auto-scroll on hover
+  testimonialsContainer.addEventListener('mouseenter', () => {
+    clearInterval(autoScrollInterval);
+  });
 
+  testimonialsContainer.addEventListener('mouseleave', () => {
+    resetAutoScroll();
+  });
 
-// עצירה כאשר העכבר נמצא על ה-track או כרטיס
-track.addEventListener('mouseenter', stopAutoScroll);
-track.addEventListener('mouseleave', startAutoScroll);
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      navigatePrev();
+    } else if (e.key === 'ArrowRight') {
+      navigateNext();
+    }
+  });
 
+  // Swipe for touch devices
+  let touchStartX = 0;
+  let touchEndX = 0;
 
-startAutoScroll();
-updateSlide();
-});
+  testimonialsContainer.addEventListener(
+    'touchstart',
+    (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    },
+    { passive: true }
+  );
+
+  testimonialsContainer.addEventListener(
+    'touchend',
+    (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    },
+    { passive: true }
+  );
+
+  function handleSwipe() {
+    const threshold = 50;
+    if (touchEndX < touchStartX - threshold) {
+      navigateNext();
+    } else if (touchEndX > touchStartX + threshold) {
+      navigatePrev();
+    }
+  }
+}
+
+// Initialize the component
+document.addEventListener('DOMContentLoaded', initTestimonials);
+
