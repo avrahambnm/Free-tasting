@@ -19,58 +19,202 @@
   --color-goals-box-bg: rgba(255, 255, 255, 0.1);
 }
 
-/* --- General Styles --- */
 body {
-  font-family: "Heebo", sans-serif;
+  font-family: "Assistant", sans-serif;
+  background: linear-gradient(135deg, #fffaf4 0%, #ffffff 100%);
+  color: #333;
+  overflow-x: hidden;
+}
+.hero {
+  background: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1500&q=80")
+    center/cover no-repeat;
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+.hero-content {
+  position: relative;
+  color: white;
+  animation: fadeIn 2s ease forwards;
+  z-index: 2;
+  padding: 2rem;
+  max-width: 800px;
+}
+
+.hero-content h1,
+.hero-content p,
+.hero-content a {
+  opacity: 0;
+  position: relative;
+}
+
+/* כותרת – עולה מלמטה */
+.hero-content h1 {
+  animation: fadeUp 1.5s ease forwards;
+  animation-delay: 0.3s;
+}
+
+/* טקסט – מגיע מצד שמאל */
+.hero-content p {
+  animation: fadeInLeft 1.5s ease forwards;
+  animation-delay: 1.2s;
+}
+
+/* כפתור – מגיע מלמטה עם אפקט רך */
+.hero-content a {
+  animation: fadeUp 1.5s ease forwards;
+  animation-delay: 2.1s;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.section {
+  max-width: 900px;
+  margin: auto;
+  padding: 4rem 1.5rem;
+  line-height: 1.9;
+  text-align: center;
+  animation: fadeUp 1.5s ease forwards;
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.highlight {
+  color: #d97706;
+  font-weight: 600;
+}
+.card {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.1),
+    rgba(217, 119, 6, 0.05)
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.card:hover::before {
+  opacity: 1;
+}
+.card:hover {
+  transform: translateY(-8px);
+}
+.btn {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  font-size: 1.2rem;
+  transition: all 0.3s;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.btn:hover {
+  transform: scale(1.05);
+  opacity: 0.95;
+}
+footer {
+  background: #f8f8f8;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+@media (max-width: 768px) {
+  .text-5xl {
+    font-size: 2rem;
+  }
+  .text-xl {
+    font-size: 1rem;
+  }
+  .card {
+    padding: 1.5rem;
+  }
 }
 
 :where([class^="ri-"])::before {
   content: "\f3c2"; /* ודא שיש לך את הספרייה של Remix Icons */
 }
 
-/* --- Gradient Background --- */
-.gradient-bg {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-}
-
-/* --- Animations --- */
 @keyframes floating {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px var(--color-pulse-glow); }
-  50% { box-shadow: 0 0 40px var(--color-pulse-glow-active); }
+  0%,
+  100% {
+    box-shadow: 0 0 20px var(--color-pulse-glow);
+  }
+  50% {
+    box-shadow: 0 0 40px var(--color-pulse-glow-active);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-@keyframes typing { from { width: 0; opacity: 1; } to { width: 100%; opacity: 1; } }
-@keyframes blink { 50% { border-color: transparent; } }
-
-/* --- Fade In --- */
-.fade-in {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease-out;
-}
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
+.pulse-glow {
+  animation: pulse-glow 2s infinite;
 }
 
-/* --- Floating --- */
-.floating { animation: floating 3s ease-in-out infinite; }
-
-/* --- Pulse Glow --- */
-.pulse-glow { animation: pulse-glow 2s infinite; }
-
-/* --- Loading Spinner --- */
 .loading {
   position: relative;
   pointer-events: none;
@@ -86,11 +230,12 @@ body {
   border: 2px solid var(--color-loading-border);
   border-top: 2px solid transparent;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.5s linear infinite;
 }
 
 /* --- Messages --- */
-.success-message, .error-message {
+.success-message,
+.error-message {
   color: white;
   padding: 1rem;
   border-radius: 12px;
@@ -100,11 +245,26 @@ body {
   transform: scale(0.8);
   transition: all 0.5s ease-out;
 }
-.success-message { background: linear-gradient(135deg, var(--color-success-start), var(--color-success-end)); }
-.error-message { background: linear-gradient(135deg, var(--color-error-start), var(--color-error-end)); }
-.success-message.show, .error-message.show { opacity: 1; transform: scale(1); }
+.success-message {
+  background: linear-gradient(
+    135deg,
+    var(--color-success-start),
+    var(--color-success-end)
+  );
+}
+.error-message {
+  background: linear-gradient(
+    135deg,
+    var(--color-error-start),
+    var(--color-error-end)
+  );
+}
+.success-message.show,
+.error-message.show {
+  opacity: 1;
+  transform: scale(1);
+}
 
-/* --- Cards --- */
 .video-card {
   background: var(--color-video-bg);
   backdrop-filter: blur(10px);
@@ -114,70 +274,4 @@ body {
   background: var(--color-testimonial-bg);
   backdrop-filter: blur(10px);
   border: 1px solid var(--color-testimonial-border);
-}
-
-/* --- Goal Section --- */
-.goal-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--color-highlight);
-  margin-bottom: 1rem;
-  opacity: 0;
-  animation: fadeIn 1s forwards;
-  animation-delay: 0.5s;
-}
-.goals-box {
-  border: 2px solid var(--color-goals-box-border);
-  padding: 1.5rem;
-  border-radius: 12px;
-  background-color: var(--color-goals-box-bg);
-  max-width: 600px;
-  margin: 1rem auto 0;
-  opacity: 0;
-  animation: fadeIn 1s forwards;
-  animation-delay: 1s;
-}
-
-.typewriter {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif; /* גופן נקי */
-  color: rgba(255, 255, 255, 1);
-  border-right: 2px solid var(--color-cursor);
-  opacity: 1;
-  animation: typing 0.8s steps(50, end), blink 0.5s step-end infinite, fadeIn 0.2s forwards;
-  animation-fill-mode: forwards;
-}
-
-/* כותרת */
-.typewriter--title {
-  font-weight: 700; /* מודגש */
-  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
-  color: #ffffff;
-  animation-duration: 1s; /* ממש מהיר */
-  animation-name: typing, blink, fadeIn;
-  animation-timing-function: steps(50, end), step-end, ease-out;
-}
-
-/* הפחתת דיליי בין שורות */
-.typewriter + .typewriter {
-  animation-delay: 0.3s; /* שורה שניה תתחיל מיד אחרי הראשונה */
-}
-
-/* אנימציות */
-@keyframes typing {
-  from { width: 0; }
-  to   { width: 100%; }
-}
-
-@keyframes blink {
-  50% { border-color: transparent; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
 }
