@@ -6,14 +6,53 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>תרפיית מימדים – תהליך לשינוי פנימי</title>
+    <title>תרפיית מימדים</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&family=Heebo:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+    />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
+     <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4F46E5",
+              secondary: "#7C3AED",
+            },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+            fontFamily: {
+              hebrew: ["Heebo", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
     <link rel="stylesheet" href="style.css" />
     <style>
       body {
@@ -142,11 +181,8 @@
     <section class="hero">
       <div class="hero-content">
         <h1 class="text-5xl font-bold mb-4">תרפיית מימדים</h1>
-        <p class="text-xl mb-6 max-w-2xl mx-auto">
-          תהליך עדין ועמוק לשינוי מהשורש – מהמקום שבו המודע והתת־מודע נפגשים
-          בהרמוניה.
-        </p>
-        <a href="#contact" class="btn">להתחלת המסע</a>
+        <p class="text-xl mb-6 max-w-2xl mx-auto">להוציא ממך אותך</p>
+        <a href="#contactForm" class="btn">להתחלת המסע</a>
       </div>
     </section>
 
@@ -173,86 +209,86 @@
         השאירו שם וטלפון, ואחזור אליכם לשיחת הכוונה קצרה, נעימה, בלי התחייבות.
       </p>
 
-       <section class="max-w-md mx-auto mb-16 fade-in">
-            <div
-              class="bg-white/95 backdrop-blur-lg rounded-2xl p-8 shadow-2xl pulse-glow"
-            >
-              <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
-                הירשם עכשיו
-              </h2>
+      <section class="max-w-md mx-auto mb-16 fade-in">
+        <div
+          class="bg-white/95 backdrop-blur-lg rounded-2xl p-8 shadow-2xl pulse-glow"
+        >
+          <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
+            הירשם עכשיו
+          </h2>
 
-              <form id="contactForm" class="space-y-6">
-                <!-- שם מלא -->
-                <div class="relative">
-                  <div
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-                  >
-                    <i class="ri-user-line text-gray-400 text-lg"></i>
-                  </div>
-                  <input
-                    type="text"
-                    id="fullname"
-                    placeholder="שם מלא"
-                    required
-                    autocomplete="name"
-                    class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
-                  />
-                </div>
-
-                <!-- טלפון -->
-                <div class="relative">
-                  <div
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-                  >
-                    <i class="ri-phone-line text-gray-400 text-lg"></i>
-                  </div>
-                  <input
-                    type="tel"
-                    id="phone"
-                    placeholder="מספר טלפון"
-                    required
-                    pattern="[0-9]{10}"
-                    autocomplete="tel"
-                    class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
-                  />
-                </div>
-
-                <!-- אימייל -->
-                <div class="relative">
-                  <div
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-                  >
-                    <i class="ri-mail-line text-gray-400 text-lg"></i>
-                  </div>
-                  <input
-                    type="email"
-                    id="email"
-                    placeholder="כתובת מייל"
-                    required
-                    autocomplete="email"
-                    class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
-                  />
-                </div>
-
-                <!-- כפתור שליחה -->
-                <button
-                  type="submit"
-                  class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-4 px-6 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                >
-                  שלח
-                </button>
-              </form>
-
-              <div id="result"></div>
-
-              <p class="text-sm text-gray-600 text-center mt-4">
-                <i
-                  class="ri-shield-check-line text-green-500 ml-1 w-4 h-4 inline-flex items-center justify-center"
-                ></i>
-                המייל שלכם מוגן ולא יועבר לצדדים שלישיים
-              </p>
+          <form id="contactForm" class="space-y-6">
+            <!-- שם מלא -->
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+                <i class="ri-user-line text-gray-400 text-lg"></i>
+              </div>
+              <input
+                type="text"
+                id="fullname"
+                placeholder="שם מלא"
+                required
+                autocomplete="name"
+                class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
+              />
             </div>
-          </section>
+
+            <!-- טלפון -->
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+                <i class="ri-phone-line text-gray-400 text-lg"></i>
+              </div>
+              <input
+                type="tel"
+                id="phone"
+                placeholder="מספר טלפון"
+                required
+                pattern="[0-9]{10}"
+                autocomplete="tel"
+                class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
+              />
+            </div>
+
+            <!-- אימייל -->
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+                <i class="ri-mail-line text-gray-400 text-lg"></i>
+              </div>
+              <input
+                type="email"
+                id="email"
+                placeholder="כתובת מייל"
+                required
+                autocomplete="email"
+                class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
+              />
+            </div>
+
+            <!-- כפתור שליחה -->
+            <button
+              type="submit"
+              class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-4 px-6 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
+            >
+              שלח
+            </button>
+          </form>
+
+          <div id="result"></div>
+
+          <p class="text-sm text-gray-600 text-center mt-4">
+            <i
+              class="ri-shield-check-line text-green-500 ml-1 w-4 h-4 inline-flex items-center justify-center"
+            ></i>
+            המייל שלכם מוגן ולא יועבר לצדדים שלישיים
+          </p>
+        </div>
+      </section>
 
       <p class="text-gray-700 mt-10 text-lg">
         המסע מתחיל בצעד אחד קטן.<br />הצעד הזה יכול להיות השארת הפרטים שלכם
