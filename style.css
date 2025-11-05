@@ -1,0 +1,183 @@
+/* --- Root Variables --- */
+:root {
+  --color-primary: #667eea;
+  --color-secondary: #764ba2;
+  --color-highlight: #1a43c9;
+  --color-success-start: #10b981;
+  --color-success-end: #059669;
+  --color-error-start: #ef4444;
+  --color-error-end: #dc2626;
+  --color-cursor: #ffd700;
+  --color-pulse-glow: rgba(79, 70, 229, 0.3);
+  --color-pulse-glow-active: rgba(79, 70, 229, 0.6);
+  --color-loading-border: #ffffff;
+  --color-video-bg: rgba(255, 255, 255, 0.1);
+  --color-video-border: rgba(255, 255, 255, 0.2);
+  --color-testimonial-bg: rgba(255, 255, 255, 0.95);
+  --color-testimonial-border: rgba(255, 255, 255, 0.3);
+  --color-goals-box-border: var(--color-secondary);
+  --color-goals-box-bg: rgba(255, 255, 255, 0.1);
+}
+
+/* --- General Styles --- */
+body {
+  font-family: "Heebo", sans-serif;
+}
+
+:where([class^="ri-"])::before {
+  content: "\f3c2"; /* ודא שיש לך את הספרייה של Remix Icons */
+}
+
+/* --- Gradient Background --- */
+.gradient-bg {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+}
+
+/* --- Animations --- */
+@keyframes floating {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px var(--color-pulse-glow); }
+  50% { box-shadow: 0 0 40px var(--color-pulse-glow-active); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes typing { from { width: 0; opacity: 1; } to { width: 100%; opacity: 1; } }
+@keyframes blink { 50% { border-color: transparent; } }
+
+/* --- Fade In --- */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Floating --- */
+.floating { animation: floating 3s ease-in-out infinite; }
+
+/* --- Pulse Glow --- */
+.pulse-glow { animation: pulse-glow 2s infinite; }
+
+/* --- Loading Spinner --- */
+.loading {
+  position: relative;
+  pointer-events: none;
+}
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--color-loading-border);
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* --- Messages --- */
+.success-message, .error-message {
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-top: 1rem;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.5s ease-out;
+}
+.success-message { background: linear-gradient(135deg, var(--color-success-start), var(--color-success-end)); }
+.error-message { background: linear-gradient(135deg, var(--color-error-start), var(--color-error-end)); }
+.success-message.show, .error-message.show { opacity: 1; transform: scale(1); }
+
+/* --- Cards --- */
+.video-card {
+  background: var(--color-video-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-video-border);
+}
+.testimonial-card {
+  background: var(--color-testimonial-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-testimonial-border);
+}
+
+/* --- Goal Section --- */
+.goal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-highlight);
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+  animation-delay: 0.5s;
+}
+.goals-box {
+  border: 2px solid var(--color-goals-box-border);
+  padding: 1.5rem;
+  border-radius: 12px;
+  background-color: var(--color-goals-box-bg);
+  max-width: 600px;
+  margin: 1rem auto 0;
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+  animation-delay: 1s;
+}
+
+.typewriter {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif; /* גופן נקי */
+  color: rgba(255, 255, 255, 1);
+  border-right: 2px solid var(--color-cursor);
+  opacity: 1;
+  animation: typing 0.8s steps(50, end), blink 0.5s step-end infinite, fadeIn 0.2s forwards;
+  animation-fill-mode: forwards;
+}
+
+/* כותרת */
+.typewriter--title {
+  font-weight: 700; /* מודגש */
+  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+  color: #ffffff;
+  animation-duration: 1s; /* ממש מהיר */
+  animation-name: typing, blink, fadeIn;
+  animation-timing-function: steps(50, end), step-end, ease-out;
+}
+
+/* הפחתת דיליי בין שורות */
+.typewriter + .typewriter {
+  animation-delay: 0.3s; /* שורה שניה תתחיל מיד אחרי הראשונה */
+}
+
+/* אנימציות */
+@keyframes typing {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+}
