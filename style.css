@@ -75,6 +75,24 @@ body {
   animation-delay: 2.1s;
 }
 
+/* אנימציה חדשה למילה "אותך" */
+@keyframes fadeInTop {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-content p .highlight {
+  display: inline-block;
+  opacity: 0;
+  font-size: 2rem;        /* גודל גדול יותר מהמקטע הרגיל */
+  font-weight: 700;       /* מודגש */
+  animation: fadeInTop 0.8s ease forwards;
+  animation-delay: 1.5s;  /* עיכוב קצר אחרי תחילת הפסקה */
+  color: #ffd700;         /* אופציונלי: צבע להבלטה */
+}
+
+
+
 @keyframes fadeInLeft {
   from {
     opacity: 0;
