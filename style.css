@@ -450,6 +450,39 @@ footer {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
-.hero-content .rounded-text {
-  font-family: 'Amatic SC', cursive !important;
+.rounded-text {
+  font-family: 'Amatic SC', cursive;
+}
+
+.whatsapp-contact {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #25D366;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+  text-decoration: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+}
+
+.whatsapp-contact.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.whatsapp-contact:hover {
+    background-color: #128C7E;
+}
+
+.whatsapp-contact img {
+    margin-left: 8px;
 }

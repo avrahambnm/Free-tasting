@@ -286,3 +286,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
   init();
 });
+
+// === WhatsApp Button Visibility ===
+document.addEventListener("DOMContentLoaded", function () {
+  const whatsappButton = document.querySelector('.whatsapp-contact');
+  const heroSection = document.querySelector('.hero');
+
+  if (!whatsappButton || !heroSection) {
+    return;
+  }
+
+  const observerOptions = {
+    rootMargin: '0px',
+    threshold: 0.1 // A small threshold
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      // If hero is NOT intersecting (is off-screen), show the button.
+      if (!entry.isIntersecting) {
+        whatsappButton.classList.add('visible');
+      } else {
+        whatsappButton.classList.remove('visible');
+      }
+    });
+  }, observerOptions);
+
+  // Start observing the hero section
+  observer.observe(heroSection);
+});
