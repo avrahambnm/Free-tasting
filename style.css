@@ -41,15 +41,27 @@ body {
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
 }
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .hero-content {
   position: relative;
   color: white;
-  animation: fadeIn 2s ease forwards;
   z-index: 2;
   padding: 2rem;
   max-width: 800px;
+  animation: zoomIn 1.5s ease forwards;
 }
 
+.hero-content .hero-logo,
 .hero-content h1,
 .hero-content h2,
 .hero-content p,
@@ -61,7 +73,9 @@ body {
 /* כותרת – עולה מלמטה */
 .hero-content h1 {
   animation: fadeUp 1.5s ease forwards;
-  animation-delay: 0.3s;
+  animation-delay: 1s;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .hero-content h2 {
@@ -71,17 +85,24 @@ body {
 /* טקסט – מגיע מצד שמאל */
 .hero-content p {
   font-family: "Quicksand", "Helvetica Neue", Arial, sans-serif;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.5px;
   animation: fadeInLeft 1s ease forwards;
-  animation-delay: 1s;display: inline-block;
-  opacity: 0;
-  font-size: 2rem; /* גודל גדול יותר מהמקטע הרגיל */
-  font-weight: 400; /* מודגש */
-  animation: fadeInTop 0.8s ease forwards;
-  animation-delay: 1s; /* עיכוב קצר אחרי תחילת הפסקה */
-  color: var(--color-highlight); /* אופציונלי: צבע להבלטה */
+  animation-delay: 1s;
+  display: inline-block;
+  margin-top: 0;
 }
+
+.highlight {
+  opacity: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-highlight);
+  display: inline-block;
+  animation: fadeUp 1.5s ease forwards;
+  animation-delay: 1.2s; /* עיכוב אחרי הכותרת והפסקה */
+}
+
 
 /* כפתור – מגיע מלמטה עם אפקט רך */
 .hero-content a {
@@ -100,8 +121,6 @@ body {
     transform: translateY(0);
   }
 }
-
-
 
 @keyframes fadeInLeft {
   from {
@@ -142,10 +161,7 @@ body {
     transform: translateY(0);
   }
 }
-.highlight {
-  color: #d97706;
-  font-weight: 600;
-}
+
 .card {
   background: white;
   border-radius: 1.5rem;
@@ -192,6 +208,25 @@ footer {
   text-align: center;
   font-size: 0.9rem;
   color: #555;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-logo {
+  width: 300px;
+  height: auto;
+  margin-bottom: 0.5rem;
+  animation: fadeIn 1.5s ease forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+.footer-logo {
+  width: 80px;
+  height: auto;
+  margin-bottom: 1rem;
 }
 @media (max-width: 768px) {
   .text-5xl {
@@ -451,20 +486,20 @@ footer {
 }
 
 .rounded-text {
-  font-family: 'Amatic SC', cursive;
+  font-family: "Amatic SC", cursive;
 }
 
 .whatsapp-contact {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #25D366;
+  background-color: #25d366;
   color: white;
   padding: 10px 15px;
   border-radius: 25px;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   text-decoration: none;
   opacity: 0;
@@ -480,9 +515,9 @@ footer {
 }
 
 .whatsapp-contact:hover {
-    background-color: #128C7E;
+  background-color: #128c7e;
 }
 
 .whatsapp-contact img {
-    margin-left: 8px;
+  margin-left: 8px;
 }
