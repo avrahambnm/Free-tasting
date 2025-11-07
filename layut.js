@@ -158,13 +158,13 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
   const testimonialsData = [
     {
-      quote: "אברהם היקר, תודה על מפגש מרפא של ממש. עדיין קשה לי לעכל. מרגיש שהתגברתי על הרגלים או פחדים של שנות חיים. והכל באופן הפשוט ביותר ולכאורה טריויאלי. תודה על לימוד שפה חדשה, שכל אחד חייב להכיר."
+      image: "WhatsApp Image 2025-11-05 at 00.18.04.jpeg"
     },
     {
-      quote: "אתה מהיחידים שהרגשתי בנוח להיפתח ולדבר גלוי ורציני ככה. ושוב תודה לך, כי תשובות כאלה וסבלנות לא מוצא אצל כל אחד"
+      image: "WhatsApp Image 2025-11-05 at 00.18.05.jpeg"
     },
     {
-      quote: "אחרי הטיפול השלישי שלנו, חשבתי על המצב שהגעתי אליך ועל איך שאני עכשיו. אמנם יש עוד עבודה . אבל שהייתי מטופל על ידי פסיכולוג לא ראיתי שינויים בכלל גם אחרי 3 חודשים שהייתי מקפיד ללכת. אז אחי אני ממש מודה לך ושיהיה ראש חודש טוב ומבורך !"
+      image: "WhatsApp Image 2025-11-05 at 00.21.10.jpeg"
     }
   ];
 
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
     testimonialsContainer.innerHTML = testimonialsData.map((testimonial, index) => {
       return `
         <div class="testimonial-card" data-index="${index}">
-          <p class="testimonial-text">"${testimonial.quote}"</p>
+          <img src="${testimonial.image}" alt="Testimonial screenshot" class="testimonial-image">
         </div>
       `;
     }).join('');
