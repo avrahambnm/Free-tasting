@@ -282,6 +282,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
     testimonialsContainer.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
     testimonialsContainer.addEventListener('mouseleave', startAutoScroll);
+
+    setupTouchEvents(); // Add this line
+  }
+
+  // New function for touch events
+  function setupTouchEvents() {
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    testimonialsContainer.addEventListener('touchstart', function(event) {
+      touchStartX = event.changedTouches[0].screenX;
+    }, { passive: true });
+
+    testimonialsContainer.addEventListener('touchend', function(event) {
+      touchEndX = event.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const swipeThreshold = 50; // Minimum distance for a swipe
+      if (touchStartX - touchEndX > swipeThreshold) {
+        // Swiped left
+        navigateNext();
+      } else if (touchEndX - touchStartX > swipeThreshold) {
+        // Swiped right
+        navigatePrev();
+      }
+    }
   }
 
   init();
