@@ -30,16 +30,17 @@ document.addEventListener("DOMContentLoaded", function () {
     threshold: 0.1,
     rootMargin: "0px 0px -50px 0px",
   };
-  const observer = new IntersectionObserver(function (entries) {
+  const observer = new IntersectionObserver(function (entries, observer) {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("visible");
+        observer.unobserve(entry.target); // Stop observing after it's visible
       }
     });
   }, observerOptions);
 
-  const fadeElements = document.querySelectorAll(".fade-in");
-  fadeElements.forEach((el) => observer.observe(el));
+  const elementsToAnimate = document.querySelectorAll(".animate-on-scroll");
+  elementsToAnimate.forEach((el) => observer.observe(el));
 });
 
 // === Form Handling ===
@@ -342,4 +343,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Start observing the hero section
   observer.observe(heroSection);
+});
+document.addEventListener("DOMContentLoaded", function () {
+  const whiteEntryCss = document.getElementById("white-entry-css");
+  const whiteSvg = document.getElementById("white-svg");
+
+  if (whiteEntryCss && whiteSvg) {
+    // Enable the CSS file
+    whiteEntryCss.removeAttribute("disabled");
+
+    // Add the 'active' class to the SVG after a longer delay
+    setTimeout(() => {
+      whiteSvg.classList.add("active");
+    }, 2000);
+  }
 });

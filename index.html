@@ -31,132 +31,74 @@
       rel="stylesheet"
     />
 
+    <link rel="stylesheet" href="white-entry.css" id="white-entry-css" disabled />
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="logo.png" />
   </head>
   <body>
     <section class="hero">
-      <div class="hero-content">
+      <div class="hero-content flex flex-col items-center justify-center">
         <img src="logo.png" alt="Logo" class="hero-logo">
-        <h1 class="text-5xl font-bold title">תרפיית מימדים</h1>
-        <p class="text-xl mb-6 max-w-2xl mx-auto rounded-text">
-          להוציא ממך <span class="highlight">אותך</span>
+        <p 
+          class="text-3xl font-light"
+        >
+          להוציא ממך
         </p>
+        <h1 
+          class="text-8xl font-black title"
+        >
+          אותך
+        </h1>
+        <div 
+          class="svg-container-white"
+        >
+          <svg id="white-svg" width="464" height="82" viewBox="0 0 464 82" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M430.804 62.727C430.195 62.379 429.76 61.161 429.76 60.465C429.412 55.158 428.89 49.764 428.629 44.283C428.455 39.237 428.629 34.104 428.716 29.145C428.89 26.013 429.238 21.315 429.673 18.27C429.76 17.661 430.456 16.182 431.065 16.617C431.848 17.226 432.283 18.183 432.109 18.792C430.978 27.318 430.804 37.671 431.239 46.284C431.5 51.243 431.5 56.289 431.5 61.248C431.5 61.509 431.761 63.249 430.804 62.727ZM463.255 55.419C461.428 57.768 459.34 58.551 457.165 58.812C454.381 59.073 451.684 59.334 449.074 58.899C439.765 57.507 434.197 52.374 435.241 42.195C436.024 35.061 439.939 29.58 446.725 26.709C450.118 25.23 453.076 26.274 455.947 28.101C457.252 29.058 458.557 30.363 459.601 31.668C460.123 32.277 461.08 33.843 460.558 33.843C459.862 33.843 456.643 31.233 454.555 29.928C450.466 27.492 445.681 29.145 442.375 32.538C438.895 36.105 437.155 40.542 437.416 45.327C437.59 50.286 440.722 53.679 445.42 55.419C450.466 57.246 455.599 57.507 460.819 55.767C461.428 55.506 463.951 54.462 463.255 55.419Z" class="svg-elem-1"></path>
+            <path d="M376.516 33.234C377.647 31.146 379.387 29.928 381.562 29.058C386.956 27.144 392.524 26.274 398.266 26.448C406.009 26.709 412.795 29.406 417.406 36.018C420.538 40.368 422.365 45.501 420.538 50.808C418.45 56.985 412.447 61.857 404.356 60.291C401.398 59.682 398.527 58.812 396.265 56.637C394.699 55.071 393.307 53.244 391.915 51.504C391.219 50.721 390.523 49.851 389.74 48.807L386.173 59.421C386.173 59.508 386.173 59.682 386.086 59.769C385.39 60.378 384.694 62.205 384.085 61.509C383.476 60.813 383.563 59.943 383.824 59.247C384.52 56.376 385.564 53.505 386.347 50.634C386.782 48.894 387.043 46.98 387.478 45.153C387.565 44.631 388.087 43.674 388.261 43.674C388.87 43.761 389.653 44.109 390.001 44.544C392.35 47.763 394.351 51.417 397.135 54.201C400.615 57.768 405.139 59.508 410.098 57.855C415.84 55.941 420.103 50.721 418.276 43.848C416.449 37.062 411.838 32.886 405.574 30.363C397.918 27.231 390.349 28.362 382.78 30.972C380.779 31.668 378.778 32.364 376.516 33.234Z" class="svg-elem-2"></path>
+            <path d="M361.759 57.855C370.633 46.284 375.07 39.672 369.328 27.405C367.327 23.229 364.369 19.836 359.41 19.662C352.537 19.227 348.622 22.968 344.533 27.405C344.185 27.84 343.054 28.275 342.532 27.405C344.968 18.879 358.453 13.485 365.848 19.14C378.028 28.275 376.723 46.719 364.195 58.203C363.151 59.16 361.933 58.029 361.759 57.855Z" class="svg-elem-3"></path>
+            <path d="M298.751 28.188C297.62 27.84 297.707 26.883 298.664 25.23C302.405 18.27 315.368 15.051 324.764 21.489C328.505 24.012 331.898 26.535 334.769 29.754C335.726 30.798 336.335 32.277 336.857 33.669C338.684 38.106 341.033 42.543 340.511 47.589C339.989 52.809 337.64 57.072 333.203 59.943C331.463 60.987 329.723 62.118 327.809 62.901C326.243 63.51 324.416 63.51 322.763 63.771L322.502 63.336C323.024 62.988 323.459 62.466 323.981 62.292C331.028 60.117 336.596 56.289 338.162 48.633C338.51 46.806 338.336 44.631 337.727 42.891C336.422 38.541 335.465 34.104 332.159 30.537C329.201 27.492 325.895 24.795 321.98 23.142C319.196 21.837 316.499 20.184 313.193 20.532C306.494 21.228 301.97 23.055 298.751 28.188ZM308.06 42.717C306.494 40.542 312.062 36.627 315.281 36.801C317.978 36.975 320.24 40.02 320.24 43.152C320.24 46.545 318.848 49.242 316.325 51.243C313.802 53.331 311.105 55.158 308.495 56.985C308.147 57.246 307.538 57.072 307.016 57.072C307.277 56.637 307.538 56.202 307.886 55.854C310.757 53.07 313.628 50.373 316.412 47.589C316.934 47.067 317.195 46.284 317.456 45.501C318.239 43.152 317.717 40.977 316.151 39.846C313.802 38.106 311.453 40.281 308.06 42.717Z" class="svg-elem-4"></path>
+            <path d="M248.513 41.325C248.339 50.982 249.296 60.204 249.296 70.644C249.296 71.862 247.991 71.601 247.643 71.601C247.295 66.207 247.034 60.813 246.512 53.679C246.077 48.111 245.468 42.717 244.772 37.671C245.642 36.105 246.338 34.8 247.121 33.495C250.34 28.188 254.603 24.012 260.432 21.837C266.696 19.488 273.221 18.096 279.66 20.88C286.184 23.838 291.926 27.927 294.014 35.409C295.841 41.847 293.84 47.502 289.751 52.461C284.096 59.421 275.918 57.855 268.871 56.376C261.911 54.897 254.342 47.85 248.513 41.325ZM292.622 40.107C292.187 36.018 291.317 32.451 288.446 29.58C284.792 25.926 280.964 22.446 275.57 21.75C268.871 20.88 262.52 22.185 257.126 26.013C253.907 28.275 251.732 31.581 249.296 34.713C248.513 35.67 248.6 38.019 249.296 38.976C250.949 41.325 252.689 43.239 254.777 45.24C260.693 50.634 267.218 55.245 275.657 55.593C278.354 55.68 281.4 55.506 283.923 54.375C290.013 51.678 291.665 45.849 292.622 40.107Z" class="svg-elem-5"></path>
+            <path d="M169.382 33.234C170.513 31.146 172.253 29.928 174.428 29.058C179.822 27.144 185.39 26.274 191.132 26.448C198.875 26.709 205.66 29.406 210.271 36.018C213.403 40.368 215.231 45.501 213.404 50.808C211.316 56.985 205.313 61.857 197.222 60.291C194.264 59.682 191.393 58.812 189.131 56.637C187.565 55.071 186.173 53.244 184.781 51.504C184.085 50.721 183.388 49.851 182.605 48.807L179.039 59.421C179.039 59.508 179.039 59.682 178.952 59.769C178.256 60.378 177.56 62.205 176.951 61.509C176.342 60.813 176.428 59.943 176.689 59.247C177.385 56.376 178.43 53.505 179.213 50.634C179.648 48.894 179.909 46.98 180.344 45.153C180.431 44.631 180.953 43.674 181.127 43.674C181.736 43.761 182.519 44.109 182.867 44.544C185.216 47.763 187.217 51.417 190.001 54.201C193.481 57.768 198.004 59.508 202.964 57.855C208.706 55.941 212.969 50.721 211.142 43.848C209.315 37.062 204.704 32.886 198.439 30.363C190.783 27.231 183.215 28.362 175.646 30.972C173.645 31.668 171.644 32.364 169.382 33.234Z" class="svg-elem-6"></path>
+            <path d="M165.698 15.66C166.394 19.14 165.785 19.053 162.827 44.979C161.609 55.593 162.044 60.117 160.826 70.818C159.434 83.52 156.302 87.261 158.303 67.251C159.869 51.243 160.826 44.979 162.479 29.145C162.914 24.621 162.914 20.097 163.262 15.573C163.262 12.615 165.002 12.093 165.698 15.66Z" class="svg-elem-7"></path>
+            <path d="M129.803 38.628C127.889 38.715 128.411 35.931 130.586 35.931C136.241 35.409 138.938 35.061 141.983 35.235C143.81 35.322 147.464 35.67 152.597 35.931C153.989 36.018 153.902 38.28 150.074 38.367C147.116 38.454 144.158 38.28 142.418 38.28C137.807 38.28 135.284 38.367 129.803 38.628Z" class="svg-elem-8"></path>
+            <path d="M88.7461 75.777H93.7921C107.451 75.951 110.409 70.992 113.715 58.29C116.934 46.11 117.369 34.626 116.586 22.011C116.412 20.184 116.499 18.357 116.76 16.617C116.847 16.095 117.717 15.66 118.239 15.225C118.587 15.747 119.109 16.356 119.109 16.878C119.196 24.795 119.631 32.712 119.109 40.542C118.413 50.982 118.587 56.028 114.585 65.772C109.017 79.17 102.231 78.387 90.3121 77.169C89.7031 77.082 89.0941 76.734 88.4851 76.473L88.7461 75.777Z" class="svg-elem-9"></path>
+            <path d="M107.249 59.508C108.641 66.468 106.727 71.601 99.1576 74.907C93.4156 77.517 87.4996 79.953 81.5836 80.562C76.9726 80.997 74.6236 80.736 73.2316 76.56C71.4916 71.427 72.0136 66.12 73.5796 60.987C76.2766 52.287 85.4986 36.018 86.1946 34.8C83.3236 33.321 78.5386 30.624 71.0566 26.883C69.2296 26.013 67.1416 25.578 64.9666 24.882C65.4886 23.055 67.0546 23.229 68.3596 23.577C74.4496 25.491 79.5826 27.84 87.4126 31.842C91.3276 23.49 91.6756 21.837 99.9406 0C101.681 0.173998 101.855 1.566 101.333 2.958C100.202 5.829 90.8926 30.885 89.6746 33.495C102.029 40.02 106.292 51.504 107.249 59.508ZM101.246 71.34C104.03 69.6 105.422 67.164 105.074 64.293C104.813 61.074 104.204 57.942 103.421 54.897C100.55 45.24 97.5046 41.76 88.3696 36.105C80.2786 51.069 74.0146 61.944 75.3196 74.298C75.7546 77.517 77.8426 78.996 81.1486 78.3C86.1946 77.169 94.8946 75.342 101.246 71.34Z" class="svg-elem-10"></path>
+            <path d="M59.3727 31.581C59.3727 34.539 57.6327 38.367 57.1977 34.713C57.1107 30.102 57.0237 22.881 57.1107 18.27C57.1107 17.487 57.9807 16.182 58.4157 16.095C59.3727 15.921 59.4597 17.313 59.5467 18.009C59.5467 22.533 59.4597 27.057 59.3727 31.581Z" class="svg-elem-11"></path>
+            <path d="M3.741 41.325C3.567 50.982 4.524 60.204 4.524 70.644C4.524 71.862 3.219 71.601 2.871 71.601C2.523 66.207 2.262 60.813 1.74 53.679C1.305 48.111 0.696 42.717 0 37.671C0.87 36.105 1.566 34.8 2.349 33.495C5.568 28.188 9.831 24.012 15.66 21.837C21.924 19.488 28.449 18.096 34.887 20.88C41.412 23.838 47.154 27.927 49.242 35.409C51.069 41.847 49.068 47.502 44.979 52.461C39.324 59.421 31.146 57.855 24.099 56.376C17.139 54.897 9.57 47.85 3.741 41.325ZM47.85 40.107C47.415 36.018 46.545 32.451 43.674 29.58C40.02 25.926 36.192 22.446 30.798 21.75C24.099 20.88 17.748 22.185 12.354 26.013C9.135 28.275 6.96 31.581 4.524 34.713C3.741 35.67 3.828 38.019 4.524 38.976C6.177 41.325 7.917 43.239 10.005 45.24C15.921 50.634 22.446 55.245 30.885 55.593C33.582 55.68 36.627 55.506 39.15 54.375C45.24 51.678 46.893 45.849 47.85 40.107Z" class="svg-elem-12"></path>
+          </svg>
+        </div>
       </div>
     </section>
 
-    <section class="section">
-      <p class="text-2xl font-semibold mb-6">
-        מרגישים שיש פער בין מה שאתם רוצים באמת – לבין מה שקורה בפועל?<br />יודעים
-        מה הייתם רוצים לחוות, אבל משהו בפנים עדיין עוצר?
-      </p>
+    <section class="section animate-on-scroll">
+      <div class="question-mark-container mb-6">
+        <span class="question-mark-bg">?</span>
+        <p class="text-2xl font-semibold">
+          מרגישים שיש <span class="keyword-highlight">פער</span> בין מה שאתם רוצים באמת – לבין מה שקורה בפועל?<br />יודעים
+          מה הייתם רוצים לחוות, אבל <span class="keyword-highlight">משהו בפנים עדיין עוצר</span>?
+        </p>
+      </div>
 
       <p class="text-lg mb-6">
-        אני מזמין אתכם לתהליך עמוק ועדין בשיטת
+        אני מזמין אתכם ל<span class="keyword-highlight">תהליך עמוק ועדין</span> בשיטת
         <span class="highlight">תרפיית מימדים</span>, שבו העבודה אינה רק על
-        מחשבות או התנהגות – אלא על האנרגיה הפנימית שמפעילה את החיים שלכם.
+        מחשבות או התנהגות – אלא על <span class="keyword-highlight">האנרגיה הפנימית</span> שמפעילה את החיים שלכם.
       </p>
 
       <p class="text-lg mb-6">
-        <span class="highlight">המטרה שלי ברורה:</span><br />להביא אתכם אל המקום
-        שבו המודע והתת־מודע פועלים ביחד – לא נלחמים זה בזה.<br />ליישר את מה
-        שאתם מרגישים, חושבים ועושים – אל מה שאתם באמת רוצים להיות.
+        <span class="font-bold">המטרה שלי ברורה:</span><br />להביא אתכם אל המקום
+        שבו המודע והתת־מודע <span class="keyword-highlight">פועלים ביחד</span> – לא נלחמים זה בזה.<br />ליישר את מה
+        שאתם מרגישים, חושבים ועושים – אל <span class="keyword-highlight">מה שאתם באמת רוצים להיות</span>.
       </p>
 
       <p class="text-lg mb-6">
-        אם אתם מרגישים שזה הזמן לשינוי אמיתי, פנימי, בלי מאבקים ובלי דרמה –
+        אם אתם מרגישים שזה הזמן ל<span class="keyword-highlight">שינוי אמיתי, פנימי</span>, <span class="keyword-highlight">בלי מאבקים ובלי דרמה</span> –
         השאירו שם וטלפון, ואחזור אליכם לשיחת הכוונה קצרה, נעימה, בלי התחייבות.
-      </p>
-
-      <section class="max-w-md mx-auto mb-16 fade-in">
-        <div
-          class="bg-white/95 backdrop-blur-lg rounded-2xl p-8 shadow-2xl pulse-glow"
-        >
-          <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
-            הירשם עכשיו
-          </h2>
-
-          <form id="contactForm" class="space-y-6">
-            <!-- שם מלא -->
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-              >
-                <i class="ri-user-line text-gray-400 text-lg"></i>
-              </div>
-              <input
-                type="text"
-                id="fullname"
-                placeholder="שם מלא"
-                required
-                autocomplete="name"
-                class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
-              />
-            </div>
-
-            <!-- טלפון -->
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-              >
-                <i class="ri-phone-line text-gray-400 text-lg"></i>
-              </div>
-              <input
-                type="tel"
-                id="phone"
-                placeholder="מספר טלפון"
-                required
-                pattern="[0-9]{10}"
-                autocomplete="tel"
-                class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
-              />
-            </div>
-
-            <!-- אימייל -->
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-              >
-                <i class="ri-mail-line text-gray-400 text-lg"></i>
-              </div>
-              <input
-                type="email"
-                id="email"
-                placeholder="כתובת מייל"
-                required
-                autocomplete="email"
-                class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
-              />
-            </div>
-
-            <!-- כפתור שליחה -->
-            <button
-              type="submit"
-              class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-4 px-6 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
-            >
-              שלח
-            </button>
-          </form>
-
-          <div id="result"></div>
-
-          <p class="text-sm text-gray-600 text-center mt-4">
-            <i
-              class="ri-shield-check-line text-green-500 ml-1 w-4 h-4 inline-flex items-center justify-center"
-            ></i>
-            המייל שלכם מוגן ולא יועבר לצדדים שלישיים
-          </p>
-        </div>
-      </section>
-
-      <p class="text-gray-700 mt-10 text-lg">
-        המסע מתחיל בצעד אחד קטן.<br />הצעד הזה יכול להיות השארת הפרטים שלכם
-        עכשיו.
       </p>
     </section>
 
-    <section class="testimonials-section section">
-      <h2 class="text-3xl font-bold mb-8">מה אומרים המטופלים</h2>
+    <section id="testimonials" class="testimonials-section section animate-on-scroll">
+      <h2 class="text-3xl font-bold mb-8">איך זה מרגיש?</h2>
       <div class="testimonials-container" id="testimonialsContainer">
         <!-- Testimonials will be generated here -->
       </div>
@@ -171,10 +113,134 @@
         </button>
       </div>
     </section>
+      
+    <section id="contact" class="max-w-md mx-auto mb-16 animate-on-scroll">
+      <div
+        class="bg-white/95 backdrop-blur-lg rounded-2xl p-8 shadow-2xl pulse-glow"
+      >
+        <div class="mb-6 text-center">
+          <p class="text-xl font-semibold text-gray-800">המסע מתחיל בצעד אחד קטן.</p>
+          <p class="text-lg text-gray-600 mt-1">הצעד הזה יכול להיות השארת הפרטים שלכם עכשיו.</p>
+        </div>
 
-    <footer>
-      <img src="logo.png" alt="Logo" class="footer-logo">
-      © 2025 תרפיית מימדים – כל הזכויות שמורות
+        <form id="contactForm" class="space-y-6">
+          <!-- שם מלא -->
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+            >
+              <i class="ri-user-line text-gray-400 text-lg"></i>
+            </div>
+            <input
+              type="text"
+              id="fullname"
+              placeholder="שם מלא"
+              required
+              autocomplete="name"
+              class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
+            />
+          </div>
+
+          <!-- טלפון -->
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+            >
+              <i class="ri-phone-line text-gray-400 text-lg"></i>
+            </div>
+            <input
+              type="tel"
+              id="phone"
+              placeholder="מספר טלפון"
+              required
+              pattern="[0-9]{10}"
+              autocomplete="tel"
+              class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
+            />
+          </div>
+
+          <!-- אימייל -->
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+            >
+              <i class="ri-mail-line text-gray-400 text-lg"></i>
+            </div>
+            <input
+              type="email"
+              id="email"
+              placeholder="כתובת מייל"
+              required
+              autocomplete="email"
+              class="w-full px-4 py-4 pr-12 text-lg border-none rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 text-right"
+            />
+          </div>
+
+          <!-- כפתור שליחה -->
+          <button
+            type="submit"
+            class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-4 px-6 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
+          >
+            שלח
+          </button>
+        </form>
+
+        <div id="result"></div>
+
+        <p class="text-sm text-gray-600 text-center mt-4">
+          <i
+            class="ri-shield-check-line text-green-500 ml-1 w-4 h-4 inline-flex items-center justify-center"
+          ></i>
+          המייל שלכם מוגן ולא יועבר לצדדים שלישיים
+        </p>
+      </div>
+    </section>
+
+      <section class="social-links-section animate-on-scroll">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">בואו נשמור על קשר</h3>
+        <div class="social-icons-container">
+          <a href="https://instagram.com/your_profile" target="_blank" aria-label="Instagram" class="social-icon social-instagram">
+            <i class="ri-instagram-line"></i>
+          </a>
+          <a href="https://tiktok.com/@your_profile" target="_blank" aria-label="TikTok" class="social-icon social-tiktok">
+            <i class="ri-tiktok-fill"></i>
+          </a>
+          <a href="https://api.whatsapp.com/send?phone=972523051441" target="_blank" aria-label="WhatsApp" class="social-icon social-whatsapp">
+            <i class="ri-whatsapp-line"></i>
+          </a>
+          <a href="mailto:email@example.com" aria-label="Email" class="social-icon social-email">
+            <i class="ri-mail-line"></i>
+          </a>
+        </div>
+      </section>
+
+    <footer class="new-footer">
+      <div class="footer-container">
+        <div class="footer-col">
+          <img src="logo.png" alt="Logo" class="footer-logo-new">
+          <p class="copyright">© 2025 תרפיית מימדים<br>כל הזכויות שמורות</p>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">קישורים מהירים</h4>
+          <ul class="footer-links">
+            <li><a href="#">ראשי</a></li>
+            <li><a href="#testimonials">איך זה מרגיש?</a></li>
+            <li><a href="#contact">יצירת קשר</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">יצירת קשר</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:email@example.com">email@example.com</a></li>
+            <li><a href="tel:+972523051441">052-305-1441</a></li>
+          </ul>
+          <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
+            <a href="#" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+            <a href="https://api.whatsapp.com/send?phone=972523051441" aria-label="WhatsApp"><i class="ri-whatsapp-line"></i></a>
+          </div>
+        </div>
+      </div>
     </footer>
 
     <script src="layut.js"></script>
