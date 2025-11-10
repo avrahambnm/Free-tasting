@@ -33,19 +33,19 @@
 
     <link rel="stylesheet" href="white-entry.css" id="white-entry-css" disabled />
     <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="logo.png" />
+    <link rel="icon" href="media/logo.png" />
   </head>
   <body>
     <section class="hero">
       <div class="hero-content flex flex-col items-center justify-center">
-        <img src="logo.png" alt="Logo" class="hero-logo">
+        <img src="media/logo.png" alt="Logo" class="hero-logo">
         <p 
-          class="text-3xl font-light"
+          class="text-2xl md:text-3xl font-light"
         >
           להוציא ממך
         </p>
         <h1 
-          class="text-8xl font-black title"
+          class="text-6xl md:text-8xl font-black title"
         >
           אותך
         </h1>
@@ -74,25 +74,33 @@
       <div class="question-mark-container mb-6">
         <span class="question-mark-bg">?</span>
         <p class="text-2xl font-semibold">
-          מרגישים שיש <span class="keyword-highlight">פער</span> בין מה שאתם רוצים באמת – לבין מה שקורה בפועל?<br />יודעים
-          מה הייתם רוצים לחוות, אבל <span class="keyword-highlight">משהו בפנים עדיין עוצר</span>?
+          מרגישים שאין קשר בין מה שאתם <span class="keyword-highlight">רוצים באמת</span> לבין מה שקורה בפועל?
+          <br />
+          יודעים מה אתם רוצים לעשות אבל <span class="keyword-highlight">משהו בפנים עדיין עוצר</span>?
         </p>
       </div>
 
       <p class="text-lg mb-6">
         אני מזמין אתכם ל<span class="keyword-highlight">תהליך עמוק ועדין</span> בשיטת
-        <span class="highlight">תרפיית מימדים</span>, שבו העבודה אינה רק על
-        מחשבות או התנהגות – אלא על <span class="keyword-highlight">האנרגיה הפנימית</span> שמפעילה את החיים שלכם.
+        <span class="highlight">תרפיית מימדים</span>, שבו השינוי יהיה לא רק במחשבות או בהתנהגות שלכם, אלא ממש על <span class="keyword-highlight">האנרגיה הפנימית</span> שמפעילה את החיים שלכם.
       </p>
 
-      <p class="text-lg mb-6">
-        <span class="font-bold">המטרה שלי ברורה:</span><br />להביא אתכם אל המקום
-        שבו המודע והתת־מודע <span class="keyword-highlight">פועלים ביחד</span> – לא נלחמים זה בזה.<br />ליישר את מה
-        שאתם מרגישים, חושבים ועושים – אל <span class="keyword-highlight">מה שאתם באמת רוצים להיות</span>.
-      </p>
+      <div class="my-goal-section">
+        <h3 class="text-2xl font-bold mb-4">המטרה שלי ברורה:</h3>
+        <p class="text-lg mb-4">
+          להביא אתכם אל המקום שבו 
+          המודע והתת־מודע <span class="keyword-highlight">פועלים ביחד</span> במקום להילחם זה בזה.
+        </p>
+        <p class="text-lg italic text-gray-600 mb-4">
+          התת מודע משתלט ולא מוכן ללכת בדרך שאתם רוצים בגלל תפיסות עולם וחוויות לא נעימות שהיו בעבר!!!
+        </p>
+        <p class="text-lg font-semibold mb-6">
+          הגיע הזמן ליישר איתו קו בשביל להגיע סוף סוף אל <span class="keyword-highlight">מציאות החיים שאתם באמת רוצים</span> לחיות בה!
+        </p>
+      </div>
 
       <p class="text-lg mb-6">
-        אם אתם מרגישים שזה הזמן ל<span class="keyword-highlight">שינוי אמיתי, פנימי</span>, <span class="keyword-highlight">בלי מאבקים ובלי דרמה</span> –
+        רוצים <span class="keyword-highlight">שינוי אמיתי, פנימי, בלי מאבקים ובלי דרמה</span>? – 
         השאירו שם וטלפון, ואחזור אליכם לשיחת הכוונה קצרה, נעימה, בלי התחייבות.
       </p>
     </section>
@@ -104,22 +112,22 @@
       </div>
 
       <div class="testimonial-nav">
-        <button class="arrow-btn" id="prevBtn">
+        <button class="arrow-btn" id="prevBtn" aria-label="Previous testimonial">
           <i class="ri-arrow-right-s-line"></i>
         </button>
         <div class="nav-dots" id="navDots"></div>
-        <button class="arrow-btn" id="nextBtn">
+        <button class="arrow-btn" id="nextBtn" aria-label="Next testimonial">
           <i class="ri-arrow-left-s-line"></i>
         </button>
       </div>
     </section>
       
-    <section id="contact" class="max-w-md mx-auto mb-16 animate-on-scroll">
+    <section id="contact" class="max-w-md mx-auto mb-16 animate-on-scroll px-4">
       <div
-        class="bg-white/95 backdrop-blur-lg rounded-2xl p-8 shadow-2xl pulse-glow"
+        class="bg-white/95 backdrop-blur-lg rounded-2xl p-6 md:p-8 shadow-2xl pulse-glow"
       >
         <div class="mb-6 text-center">
-          <p class="text-xl font-semibold text-gray-800">המסע מתחיל בצעד אחד קטן.</p>
+          <p class="text-xl font-semibold text-gray-800">הדרך מתחילה בצעד אחד קטן.</p>
           <p class="text-lg text-gray-600 mt-1">הצעד הזה יכול להיות השארת הפרטים שלכם עכשיו.</p>
         </div>
 
@@ -217,7 +225,7 @@
     <footer class="new-footer">
       <div class="footer-container">
         <div class="footer-col">
-          <img src="logo.png" alt="Logo" class="footer-logo-new">
+          <img src="media/logo.png" alt="Logo" class="footer-logo-new">
           <p class="copyright">© 2025 תרפיית מימדים<br>כל הזכויות שמורות</p>
         </div>
         <div class="footer-col">
@@ -247,7 +255,7 @@
 
     <div class="whatsapp-contact">
       <a href="https://api.whatsapp.com/send?phone=972523051441" class="flex items-center space-x-2">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo" class="w-8 h-8">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/1200px-WhatsApp.svg.png" alt="WhatsApp Logo" class="w-8 h-8">
         <span>דברו איתי בוואטסאפ</span>
       </a>
     </div>

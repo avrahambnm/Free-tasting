@@ -159,13 +159,29 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
   const testimonialsData = [
     {
-      image: "WhatsApp Image 2025-11-05 at 00.18.04.jpeg"
+      type: 'video',
+      src: "media/feedbacks/WhatsApp Video 2025-11-06 at 00.43.30.mp4",
+      alt: "Video testimonial"
     },
     {
-      image: "WhatsApp Image 2025-11-05 at 00.18.05.jpeg"
+      type: 'image',
+      src: "media/feedbacks/WhatsApp Image 2025-11-05 at 00.18.04.jpeg",
+      alt: "A screenshot of a testimonial."
     },
     {
-      image: "WhatsApp Image 2025-11-05 at 00.21.10.jpeg"
+      type: 'image',
+      src: "media/feedbacks/WhatsApp Image 2025-11-05 at 00.18.05.jpeg",
+      alt: "A screenshot of a testimonial."
+    },
+    {
+      type: 'image',
+      src: "media/feedbacks/WhatsApp Image 2025-11-05 at 00.21.10.jpeg",
+      alt: "A screenshot of a testimonial."
+    },
+    {
+      type: 'image',
+      src: "media/feedbacks/WhatsApp Image 2025-11-10 at 21.50.54.jpeg",
+      alt: "A screenshot of a testimonial."
     }
   ];
 
@@ -187,16 +203,58 @@ document.addEventListener("DOMContentLoaded", function () {
     updateActiveElements();
     startAutoScroll();
     setupEventListeners();
+    setupLazyLoading(); // Add this call
   }
 
   function renderTestimonials() {
     testimonialsContainer.innerHTML = testimonialsData.map((testimonial, index) => {
-      return `
-        <div class="testimonial-card" data-index="${index}">
-          <img src="${testimonial.image}" alt="Testimonial screenshot" class="testimonial-image">
-        </div>
-      `;
+      if (testimonial.type === 'video') {
+        return `
+          <div class="testimonial-card" data-index="${index}">
+            <video controls preload="metadata" class="testimonial-image" title="${testimonial.alt}">
+              <source data-src="${testimonial.src}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        `;
+      } else {
+        // Add a placeholder for lazy loading, e.g., a transparent pixel
+        return `
+          <div class="testimonial-card" data-index="${index}">
+            <img data-src="${testimonial.src}" alt="${testimonial.alt}" class="testimonial-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+          </div>
+        `;
+      }
     }).join('');
+  }
+
+  function setupLazyLoading() {
+    const lazyLoadObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const card = entry.target;
+          const img = card.querySelector('img[data-src]');
+          const video = card.querySelector('video');
+
+          if (img) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+          } else if (video) {
+            const source = video.querySelector('source[data-src]');
+            if (source) {
+              source.src = source.dataset.src;
+              source.removeAttribute('data-src');
+              video.load();
+            }
+          }
+          observer.unobserve(card);
+        }
+      });
+    }, { root: testimonialsContainer, rootMargin: "0px 200px 0px 200px" }); // Pre-load media 200px before they are visible
+
+    document.querySelectorAll('.testimonial-card').forEach(card => {
+      lazyLoadObserver.observe(card);
+    });
   }
 
   function renderNavigationDots() {
@@ -246,7 +304,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function pauseCurrentVideo() {
+    const currentCard = document.querySelector(`.testimonial-card[data-index="${currentIndex}"]`);
+    if (currentCard) {
+      const video = currentCard.querySelector('video');
+      if (video && !video.paused) {
+        video.pause();
+      }
+    }
+  }
+
   function navigateToTestimonial(index) {
+    pauseCurrentVideo();
     currentIndex = index;
     updateActiveElements();
     scrollToCurrentCard();
@@ -254,6 +323,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function navigatePrev() {
+    pauseCurrentVideo();
     currentIndex = (currentIndex - 1 + testimonialsData.length) % testimonialsData.length;
     updateActiveElements();
     scrollToCurrentCard();
@@ -261,6 +331,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function navigateNext() {
+    pauseCurrentVideo();
     currentIndex = (currentIndex + 1) % testimonialsData.length;
     updateActiveElements();
     scrollToCurrentCard();
@@ -283,6 +354,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     testimonialsContainer.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
     testimonialsContainer.addEventListener('mouseleave', startAutoScroll);
+
+    // Use event delegation for video events since videos are lazy-loaded
+    testimonialsContainer.addEventListener('play', (e) => {
+        if (e.target.tagName === 'VIDEO') {
+            clearInterval(autoScrollInterval);
+        }
+    }, true);
+
+    testimonialsContainer.addEventListener('pause', (e) => {
+        if (e.target.tagName === 'VIDEO') {
+            resetAutoScroll();
+        }
+    }, true);
+
+    testimonialsContainer.addEventListener('ended', (e) => {
+        if (e.target.tagName === 'VIDEO') {
+            resetAutoScroll();
+        }
+    }, true);
+
 
     setupTouchEvents(); // Add this line
   }
