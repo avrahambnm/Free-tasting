@@ -16,16 +16,18 @@ const transporter = nodemailer.createTransport({
  * שליחת מייל
  * @param {string} to - כתובת יעד
  * @param {string} subject - נושא המייל
- * @param {string} text - תוכן המייל (טקסט בלבד)
+ * @param {string} text - תוכן המייל (טקסט בלבד, כחלופה ל-HTML)
+ * @param {string} htmlContent - תוכן המייל בפורמט HTML
  * @returns {Promise} - מבטיח סיום שליחה או שגיאה
  */
-export async function sendMail(to, subject, text) {
+export async function sendMail(to, subject, text, htmlContent) {
     try {
         const info = await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to,
             subject,
-            text
+            text,
+            html: htmlContent
         });
         return info;
     } catch (error) {
