@@ -83,9 +83,9 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="success-message">
                   <div class="flex items-center justify-center mb-2">
                       <i class="ri-check-circle-fill text-2xl ml-2 w-6 h-6 flex items-center justify-center"></i>
-                      <span class="font-semibold">נרשמתם בהצלחה!</span>
+                      <span class="font-semibold">נרשמת בהצלחה!</span>
                   </div>
-                  <p>הסרטונים נשלחו למייל שלכם. בדקו גם בתיקיית הספאם.</p>
+                  <p>הסרטונים נשלחו למייל שלך. בדוק גם בתיקיית הספאם.</p>
               </div>
           `;
           form.reset();
@@ -191,6 +191,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
 
+  // Modal Elements
+  const testimonialModal = document.getElementById('testimonialModal');
+  const closeButton = testimonialModal ? testimonialModal.querySelector('.close-button') : null;
+  const modalImage = document.getElementById('modalImage');
+  const modalVideo = document.getElementById('modalVideo');
+  const modalVideoSource = modalVideo ? modalVideo.querySelector('source') : null;
+
   if (!testimonialsContainer) return;
 
   let currentIndex = 0;
@@ -235,6 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const card = entry.target;
           const img = card.querySelector('img[data-src]');
           const video = card.querySelector('video');
+          const therapistImage = card.querySelector('.therapist-image[data-src]'); // Select therapist image
 
           if (img) {
             img.src = img.dataset.src;
@@ -246,6 +254,9 @@ document.addEventListener("DOMContentLoaded", function () {
               source.removeAttribute('data-src');
               video.load();
             }
+          } else if (therapistImage) { // Handle therapist image
+            therapistImage.src = therapistImage.dataset.src;
+            therapistImage.removeAttribute('data-src');
           }
           observer.unobserve(card);
         }
@@ -255,6 +266,12 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll('.testimonial-card').forEach(card => {
       lazyLoadObserver.observe(card);
     });
+
+    // Observe the therapist image container
+    const therapistImageContainer = document.querySelector('.therapist-image-container');
+    if (therapistImageContainer) {
+      lazyLoadObserver.observe(therapistImageContainer);
+    }
   }
 
   function renderNavigationDots() {
@@ -355,7 +372,6 @@ document.addEventListener("DOMContentLoaded", function () {
     testimonialsContainer.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
     testimonialsContainer.addEventListener('mouseleave', startAutoScroll);
 
-    // Use event delegation for video events since videos are lazy-loaded
     testimonialsContainer.addEventListener('play', (e) => {
         if (e.target.tagName === 'VIDEO') {
             clearInterval(autoScrollInterval);
@@ -374,8 +390,33 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }, true);
 
+    // Event listener for opening modal
+    testimonialsContainer.querySelectorAll('.testimonial-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const type = card.dataset.type;
+        const src = card.dataset.src;
+        openModal(type, src);
+      });
+    });
 
-    setupTouchEvents(); // Add this line
+    // Event listeners for closing modal
+    if (closeButton) {
+      closeButton.addEventListener('click', closeModal);
+    }
+    if (testimonialModal) {
+      testimonialModal.addEventListener('click', (e) => {
+        if (e.target === testimonialModal) {
+          closeModal();
+        }
+      });
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && testimonialModal && testimonialModal.style.display === 'flex') {
+        closeModal();
+      }
+    });
+
+    setupTouchEvents();
   }
 
   // New function for touch events
@@ -404,48 +445,97 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function openModal(type, src) {
+    if (!testimonialModal) return;
+
+    testimonialModal.style.display = 'flex'; // Use flex to center content
+    if (type === 'image') {
+      modalImage.src = src;
+      modalImage.style.display = 'block';
+      modalVideo.style.display = 'none';
+      if (modalVideoSource) modalVideoSource.src = ''; // Clear video source
+      modalVideo.load(); // Stop video playback
+    } else if (type === 'video') {
+      if (modalVideoSource) modalVideoSource.src = src;
+      modalVideo.load();
+      modalVideo.style.display = 'block';
+      modalImage.style.display = 'none';
+      modalImage.src = ''; // Clear image source
+    }
+    // Pause auto-scroll when modal is open
+    clearInterval(autoScrollInterval);
+  }
+
+  function closeModal() {
+    if (!testimonialModal) return;
+
+    testimonialModal.style.display = 'none';
+    modalImage.src = '';
+    if (modalVideoSource) modalVideoSource.src = '';
+    modalVideo.load(); // Stop video playback
+    // Resume auto-scroll when modal is closed
+    resetAutoScroll();
+  }
+
   init();
 });
 
-// === WhatsApp Button Visibility ===
-document.addEventListener("DOMContentLoaded", function () {
-  const whatsappButton = document.querySelector('.whatsapp-contact');
-  const heroSection = document.querySelector('.hero');
+  // === WhatsApp Button Visibility ===
+  document.addEventListener("DOMContentLoaded", function () {
+    const whatsappButton = document.querySelector('.whatsapp-contact');
+    const heroSection = document.querySelector('.hero');
+    const backToTopBtn = document.getElementById('backToTopBtn');
 
-  if (!whatsappButton || !heroSection) {
-    return;
-  }
+    if (!whatsappButton || !heroSection || !backToTopBtn) {
+      return;
+    }
 
-  const observerOptions = {
-    rootMargin: '0px',
-    threshold: 0.1 // A small threshold
-  };
+    const observerOptions = {
+      rootMargin: '0px',
+      threshold: 0.1 // A small threshold
+    };
 
-  const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => {
-      // If hero is NOT intersecting (is off-screen), show the button.
-      if (!entry.isIntersecting) {
-        whatsappButton.classList.add('visible');
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        // If hero is NOT intersecting (is off-screen), show the whatsapp button.
+        if (!entry.isIntersecting) {
+          whatsappButton.classList.add('visible');
+        } else {
+          whatsappButton.classList.remove('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Start observing the hero section
+    observer.observe(heroSection);
+
+    // Back-to-Top button logic
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) { // Show button after scrolling 300px
+        backToTopBtn.classList.add('show');
       } else {
-        whatsappButton.classList.remove('visible');
+        backToTopBtn.classList.remove('show');
       }
     });
-  }, observerOptions);
 
-  // Start observing the hero section
-  observer.observe(heroSection);
-});
-document.addEventListener("DOMContentLoaded", function () {
-  const whiteEntryCss = document.getElementById("white-entry-css");
-  const whiteSvg = document.getElementById("white-svg");
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+    const whiteEntryCss = document.getElementById("white-entry-css");
+    const whiteSvg = document.getElementById("white-svg");
 
-  if (whiteEntryCss && whiteSvg) {
-    // Enable the CSS file
-    whiteEntryCss.removeAttribute("disabled");
+    if (whiteEntryCss && whiteSvg) {
+      // Enable the CSS file
+      whiteEntryCss.removeAttribute("disabled");
 
-    // Add the 'active' class to the SVG after a longer delay
-    setTimeout(() => {
-      whiteSvg.classList.add("active");
-    }, 2000);
-  }
-});
+      // Add the 'active' class to the SVG after a longer delay
+      setTimeout(() => {
+        whiteSvg.classList.add("active");
+      }, 2000);
+    }
+  });
