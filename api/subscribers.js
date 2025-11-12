@@ -4,7 +4,7 @@ import {
   addSubscriber,
   deleteSubscriber,
 } from "../backend/db/subscribers.js";
-import { sendMail } from "../backend/services/mailer.js";
+import { sendMail, sendRegistrationSuccessEmail } from "../backend/services/mailer.js";
 
 export default async function handler(req, res) {
   try {
@@ -23,12 +23,8 @@ export default async function handler(req, res) {
         // הוספה למסד
         await addSubscriber(fullname, email, phone);
 
-        // שליחת מייל
-        const to = email;
-        const subject = "הסרטונים שלך";
-        const text = "שלום! הנה הקישור לסרטונים שלך...";
-        const info = await sendMail(to, subject, text);
-
+                    // שליחת מייל הרשמה בפורמט HTML
+                    const info = await sendRegistrationSuccessEmail(email, fullname);
         return res.status(200).json({ success: true, info });
       } catch (err) {
         return res.status(500).json({ error: err.message });
