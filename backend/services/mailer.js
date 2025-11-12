@@ -65,9 +65,21 @@ export async function sendRegistrationSuccessEmail(to, name) {
             filename: 'logo.png',
             path: path.join(process.cwd(), 'media', 'logo.png'),
             cid: 'logo' // Content ID for embedding in HTML
+        },
+        {
+            filename: 'whatsapp_logo.png',
+            path: path.join(process.cwd(), 'media', 'whatsapp_logo.png'),
+            cid: 'whatsapp_logo'
+        },
+        {
+            filename: 'instagram_logo.png',
+            path: path.join(process.cwd(), 'media', 'instagram_logo.png'),
+            cid: 'instagram_logo'
         }];
 
-        const plainTextContent = `${name} היקר/ה,
+        const plainTextContent = `${name} יקר,
+
+להוציא ממך אותך
 
 הפרטים שלך נקלטו בהצלחה!
 בעזרת השם, אצור איתך קשר בהקדם.
@@ -75,10 +87,9 @@ export async function sendRegistrationSuccessEmail(to, name) {
 בברכה,
 אברהם
 
-בקר באתר שלנו: [קישור לאתר]
-
 טלפון: 052-305-1441
 מייל: avrahambnm@gmail.com
+בקר באתר שלנו: [קישור לאתר]
 אינסטגרם: https://www.instagram.com/avraham270?utm_source=qr
 וואטסאפ: https://api.whatsapp.com/send?phone=972523051441
 
