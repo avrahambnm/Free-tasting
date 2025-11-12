@@ -65,16 +65,6 @@ export async function sendRegistrationSuccessEmail(to, name) {
             filename: 'logo.png',
             path: path.join(process.cwd(), 'media', 'logo.png'),
             cid: 'logo' // Content ID for embedding in HTML
-        },
-        {
-            filename: 'whatsapp_logo.png',
-            path: path.join(process.cwd(), 'media', 'whatsapp_logo.png'),
-            cid: 'whatsapp_logo'
-        },
-        {
-            filename: 'instagram_logo.png',
-            path: path.join(process.cwd(), 'media', 'instagram_logo.png'),
-            cid: 'instagram_logo'
         }];
 
         const plainTextContent = `${name} יקר,
