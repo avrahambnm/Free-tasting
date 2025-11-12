@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
 import path from 'path';
+import juice from 'juice';
 
 dotenv.config();
 
@@ -60,6 +61,7 @@ export async function sendRegistrationSuccessEmail(to, name) {
         }
 
         htmlContent = htmlContent.replace('{{name}}', name);
+        htmlContent = juice(htmlContent);
 
         const attachments = [{
             filename: 'logo.png',
@@ -86,7 +88,7 @@ export async function sendRegistrationSuccessEmail(to, name) {
 © 2025 אברהם. כל הזכויות שמורות.`;
 
         console.log(`Attempting to send registration email to: ${to}`);
-        const info = await sendMail(to, subject, plainTextContent, htmlContent, attachments);
+        const info = await sendMail(to, subject, null, htmlContent, attachments);
         console.log('Registration email sent successfully:', info);
         return info;
     } catch (error) {

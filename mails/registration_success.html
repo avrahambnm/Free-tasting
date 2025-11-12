@@ -4,34 +4,166 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>הפרטים שלך נקלטו בהצלחה!</title>
-</head>
-<body style="font-family: &quot;Assistant&quot;, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; direction: rtl; text-align: right; color: #4a4a4a; line-height: 1.8;">
-    <div class="email-container" style="max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-top: 5px solid #667eea; text-align: center;">
-        <div class="header" style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #eeeeee; margin-bottom: 20px;">
-            <img src="cid:logo" alt="לוגו החברה" style="max-width: 150px; height: auto;">
-            <p style="font-size: 20px; font-weight: normal; margin-top: 10px; color: #333333;">להוציא ממך <span style="font-size: 24px; font-weight: 700; color: #667eea;">אותך</span></p>
-        </div>
-        <div class="content" style="font-size: 18px; color: #333333;">
-            <p style="margin-bottom: 15px;"><span class="highlight" style="color: #667eea; font-weight: 700;">{{name}}</span> יקר,</p>
-            <p style="margin-bottom: 25px; font-size: 22px; font-weight: 700; color: #667eea;">הפרטים שלך נקלטו בהצלחה!</p>
-            <p style="margin-bottom: 25px;">בעזרת השם, אצור איתך קשר בהקדם.</p>
+    <style>
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: right;
+            color: #4a4a4a;
+            line-height: 1.8;
+        }
 
-            <p style="margin-bottom: 15px;">בברכה,</p>
-            <p class="gold-accent" style="margin-bottom: 15px; color: #daa520; font-weight: 700;">אברהם</p>
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid #667eea;
+        }
+
+        .header img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .header p {
+            font-size: 20px;
+            margin-top: 10px;
+            color: #333333;
+        }
+
+        .header span {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .content p {
+            margin: 15px 0;
+            font-size: 18px;
+        }
+
+        .content p.title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .content p.sign {
+            color: #daa520;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 12px 25px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .button:hover {
+            background: linear-gradient(90deg, #764ba2, #667eea);
+            transform: scale(1.05);
+        }
+
+        .footer {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .footer img {
+            max-width: 80px;
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: #e2e8f0;
+            text-decoration: none;
+            margin: 0 6px;
+        }
+
+        .footer .icon {
+            width: 24px;
+            height: 24px;
+            fill: #ffffff;
+            transition: fill 0.3s ease, transform 0.3s ease;
+            vertical-align: middle;
+        }
+
+        .footer .icon.instagram:hover {
+            fill: #e1306c;
+            transform: scale(1.1);
+        }
+
+        .footer .icon.whatsapp:hover {
+            fill: #25D366;
+            transform: scale(1.1);
+        }
+
+        /* Divider */
+        .divider {
+            width: 60px;
+            height: 3px;
+            background-color: #667eea;
+            margin: 20px auto;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <img src="cid:logo" alt="לוגו החברה">
+            <p>להוציא ממך <span>אותך</span></p>
+        </div>
+
+        <div class="content">
+            <p><span style="color: #667eea; font-weight: 700;">{{name}}</span> יקר,</p>
+            <p class="title">הפרטים שלך נקלטו בהצלחה!</p>
+            <p>בעזרת השם, אצור איתך קשר בהקדם.</p>
+            <p class="sign">אברהם</p>
+
+            <a href="https://avraham-ben-naim.vercel.app/" class="button" target="_blank">בקר באתר שלנו</a>
         </div>
     </div>
-    <div class="footer" style="background-color: #2d3748; color: #e2e8f0; padding: 20px; text-align: center; font-size: 12px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
-        <img src="cid:logo" alt="לוגו החברה" class="footer-logo" style="max-width: 80px; height: auto; margin-bottom: 10px;">
-        <div class="footer-contact-info">
-            <p style="margin: 5px 0;">טלפון: <a href="tel:0523051441" style="color: #e2e8f0; text-decoration: none;">052-305-1441</a></p>
-            <p style="margin: 5px 0;">מייל: <a href="mailto:avrahambnm@gmail.com" style="color: #e2e8f0; text-decoration: none;">avrahambnm@gmail.com</a></p>
-            <p style="margin: 5px 0;"><a href="#" style="color: #e2e8f0; text-decoration: none;">בקר באתר שלנו</a></p>
+
+    <div class="footer">
+        <img src="cid:logo" alt="לוגו החברה">
+        <div>
+            <p>טלפון: <a href="tel:0523051441">052-305-1441</a></p>
+            <p>מייל: <a href="mailto:avrahambnm@gmail.com">avrahambnm@gmail.com</a></p>
+            <p>או בקר באתר: <a href="https://avraham-ben-naim.vercel.app/" target="_blank">avraham-ben-naim.vercel.app</a></p>
         </div>
-        <div class="footer-social-links">
-            <a href="https://www.instagram.com/avraham270?utm_source=qr" target="_blank" style="color: #e2e8f0; text-decoration: none; margin: 0 8px; font-size: 14px; transition: color 0.3s ease;">אינסטגרם</a> |
-            <a href="https://api.whatsapp.com/send?phone=972523051441" target="_blank" style="color: #e2e8f0; text-decoration: none; margin: 0 8px; font-size: 14px; transition: color 0.3s ease;">וואטסאפ</a>
+
+        <div style="margin-top: 10px;">
+            <a href="https://www.instagram.com/avraham270?utm_source=qr" target="_blank">
+                <svg class="icon instagram" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12.001 9C10.3436 9 9.00098 10.3431 9.00098 12C9.00098 13.6573 10.3441 15 12.001 15C13.6583 15 15.001 13.6569 15.001 12C15.001 10.3427 13.6579 9 12.001 9ZM12.001 7C14.7614 7 17.001 9.2371 17.001 12C17.001 14.7605 14.7639 17 12.001 17C9.24051 17 7.00098 14.7629 7.00098 12C7.00098 9.23953 9.23808 7 12.001 7ZM18.501 6.74915C18.501 7.43926 17.9402 7.99917 17.251 7.99917C16.5609 7.99917 16.001 7.4384 16.001 6.74915C16.001 6.0599 16.5617 5.5 17.251 5.5C17.9393 5.49913 18.501 6.0599 18.501 6.74915ZM12.001 4C9.5265 4 9.12318 4.00655 7.97227 4.0578C7.18815 4.09461 6.66253 4.20007 6.17416 4.38967C5.74016 4.55799 5.42709 4.75898 5.09352 5.09255C4.75867 5.4274 4.55804 5.73963 4.3904 6.17383C4.20036 6.66332 4.09493 7.18811 4.05878 7.97115C4.00703 9.0752 4.00098 9.46105 4.00098 12C4.00098 14.4745 4.00753 14.8778 4.05877 16.0286C4.0956 16.8124 4.2012 17.3388 4.39034 17.826C4.5591 18.2606 4.7605 18.5744 5.09246 18.9064C5.42863 19.2421 5.74179 19.4434 6.17187 19.6094C6.66619 19.8005 7.19148 19.9061 7.97212 19.9422C9.07618 19.9939 9.46203 20 12.001 20C14.4755 20 14.8788 19.9934 16.0296 19.9422C16.8117 19.9055 17.3385 19.7996 17.827 19.6106C18.2604 19.4423 18.5752 19.2402 18.9074 18.9085C19.2436 18.5718 19.4445 18.2594 19.6107 17.8283C19.8013 17.3358 19.9071 16.8098 19.9432 16.0289C19.9949 14.9248 20.001 14.5389 20.001 12C20.001 9.52552 19.9944 9.12221 19.9432 7.97137C19.9064 7.18906 19.8005 6.66149 19.6113 6.17318C19.4434 5.74038 19.2417 5.42635 18.9084 5.09255C18.573 4.75715 18.2616 4.55693 17.8271 4.38942C17.338 4.19954 16.8124 4.09396 16.0298 4.05781C14.9258 4.00605 14.5399 4 12.001 4Z"></path>
+                </svg>
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=972523051441" target="_blank">
+                <svg class="icon whatsapp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                    <path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.647 0.861 5.099 2.319 7.086L4 29l7.197-2.262C12.699 27.572 14.312 28 16.001 28 22.628 28 28 22.627 28 16S22.628 3 16.001 3zm0 22c-1.5 0-2.938-.329-4.25-.931l-.304-.14-4.25 1.336 1.386-4.128-.18-.29C7.457 19.346 7 17.713 7 16 7 10.486 11.486 6 16.001 6 20.514 6 25 10.486 25 16s-4.486 9-8.999 9zm4.91-6.582c-.268-.134-1.586-.783-1.833-.872-.247-.09-.428-.134-.608.133-.18.268-.698.872-.857 1.05-.159.178-.317.201-.585.067-.268-.134-1.132-.417-2.156-1.329-.798-.712-1.336-1.59-1.494-1.858-.158-.268-.017-.413.118-.547.122-.122.268-.317.402-.476.134-.158.179-.268.268-.446.089-.178.045-.334-.022-.468-.067-.134-.607-1.463-.832-2.004-.22-.528-.445-.456-.608-.465l-.52-.009c-.178 0-.467.067-.713.334-.246.268-.933.911-.933 2.222 0 1.312.955 2.579 1.089 2.757.134.178 1.877 2.869 4.55 4.022.636.274 1.132.438 1.519.561.638.203 1.217.175 1.676.106.511-.076 1.586-.649 1.812-1.277.223-.627.223-1.165.156-1.277-.067-.111-.246-.178-.514-.312z"></path>
+                </svg>
+            </a>
         </div>
-        <p style="margin-top: 15px;">&copy; 2025 <span class="gold-accent" style="color: #daa520; font-weight: 700;">אברהם</span>. כל הזכויות שמורות.</p>
+
+        <div class="divider"></div>
+        <p>&copy; 2025 <span style="color: #daa520; font-weight: 700;">אברהם</span>. כל הזכויות שמורות.</p>
     </div>
 </body>
 </html>
