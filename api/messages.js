@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { readMessages, addMessage } from '../backend/db/messages.js';
 import { readSubscribers } from '../backend/db/subscribers.js';
 import { sendMail } from '../backend/services/mailer.js';
