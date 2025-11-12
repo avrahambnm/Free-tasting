@@ -67,8 +67,25 @@ export async function sendRegistrationSuccessEmail(to, name) {
             cid: 'logo' // Content ID for embedding in HTML
         }];
 
+        const plainTextContent = `${name} היקר/ה,
+
+הפרטים שלך נקלטו בהצלחה!
+בעזרת השם, אצור איתך קשר בהקדם.
+
+בברכה,
+אברהם
+
+בקר באתר שלנו: [קישור לאתר]
+
+טלפון: 052-305-1441
+מייל: avrahambnm@gmail.com
+אינסטגרם: https://www.instagram.com/avraham270?utm_source=qr
+וואטסאפ: https://api.whatsapp.com/send?phone=972523051441
+
+© 2025 אברהם. כל הזכויות שמורות.`;
+
         console.log(`Attempting to send registration email to: ${to}`);
-        const info = await sendMail(to, subject, null, htmlContent, attachments);
+        const info = await sendMail(to, subject, plainTextContent, htmlContent, attachments);
         console.log('Registration email sent successfully:', info);
         return info;
     } catch (error) {
