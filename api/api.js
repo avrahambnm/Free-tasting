@@ -68,9 +68,20 @@ app.post('/api/subscribers', async (req, res) => { // Added async here
   try {
     const { email, name } = req.body; // Added name
     addSubscriber(email);
-    await sendRegistrationSuccessEmail(email, name || 'היקר/ה'); // Call new function, provide default name
+    
+    try {
+      await sendRegistrationSuccessEmail(email, name || 'היקר/ה'); // Call new function, provide default name
+      console.log(`Registration email successfully triggered for ${email}`);
+    } catch (emailError) {
+      console.error(`Failed to send registration email to ${email}:`, emailError);
+      // Decide if you want to return a 500 here or still success if subscriber was added
+      // For now, let's still return success if subscriber was added, but log the email error.
+      // If email sending is critical for registration, you might want to re-throw or return 500.
+    }
+
     res.json({ success: true });
   } catch (err) {
+    console.error('Error in /api/subscribers:', err); // Log the main error
     res.status(400).json({ error: err.message });
   }
 });

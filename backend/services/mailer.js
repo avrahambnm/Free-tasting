@@ -47,18 +47,33 @@ export async function sendMail(to, subject, text, htmlContent, attachments = [])
  * @returns {Promise} - מבטיח סיום שליחה או שגיאה
  */
 export async function sendRegistrationSuccessEmail(to, name) {
-    const subject = 'הפרטים שלך נקלטו בהצלחה!';
-    const templatePath = path.join(process.cwd(), 'mails', 'registration_success.html');
-    let htmlContent = await fs.readFile(templatePath, 'utf8');
+    try {
+        const subject = 'הפרטים שלך נקלטו בהצלחה!';
+        const templatePath = path.join(process.cwd(), 'mails', 'registration_success.html');
+        
+        let htmlContent;
+        try {
+            htmlContent = await fs.readFile(templatePath, 'utf8');
+        } catch (readError) {
+            console.error('Error reading email template:', readError);
+            throw new Error('Failed to read email template.');
+        }
 
-    htmlContent = htmlContent.replace('{{name}}', name);
+        htmlContent = htmlContent.replace('{{name}}', name);
 
-    const attachments = [{
-        filename: 'logo.png',
-        path: path.join(process.cwd(), 'media', 'logo.png'),
-        cid: 'logo' // Content ID for embedding in HTML
-    }];
+        const attachments = [{
+            filename: 'logo.png',
+            path: path.join(process.cwd(), 'media', 'logo.png'),
+            cid: 'logo' // Content ID for embedding in HTML
+        }];
 
-    return sendMail(to, subject, null, htmlContent, attachments);
+        console.log(`Attempting to send registration email to: ${to}`);
+        const info = await sendMail(to, subject, null, htmlContent, attachments);
+        console.log('Registration email sent successfully:', info);
+        return info;
+    } catch (error) {
+        console.error('Error in sendRegistrationSuccessEmail:', error);
+        throw error; // Re-throw to propagate the error to the caller (api.js)
+    }
 }
 
