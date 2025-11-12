@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import Database from 'better-sqlite3';
 import { sendMail } from './mailer.js';
+import { sendRegistrationSuccessEmail } from '../backend/services/mailer.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -63,10 +64,11 @@ app.get('/api/subscribers', (req, res) => {
   }
 });
 
-app.post('/api/subscribers', (req, res) => {
+app.post('/api/subscribers', async (req, res) => { // Added async here
   try {
-    const { email } = req.body;
+    const { email, name } = req.body; // Added name
     addSubscriber(email);
+    await sendRegistrationSuccessEmail(email, name || 'היקר/ה'); // Call new function, provide default name
     res.json({ success: true });
   } catch (err) {
     res.status(400).json({ error: err.message });
