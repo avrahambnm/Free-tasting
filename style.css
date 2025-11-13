@@ -30,6 +30,7 @@ body {
   line-height: 1.8; /* Increased line height */
   letter-spacing: 0.02em; /* Slightly increased letter spacing */
   overflow-x: hidden;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .hero {
@@ -87,6 +88,30 @@ body {
   max-width: 800px;
   /* Removed animation: zoomIn from here */
 }
+
+.scroll-down-arrow {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3rem;
+  color: white;
+  animation: bounce 2s infinite;
+  z-index: 3;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  40% {
+    transform: translateX(-50%) translateY(-20px);
+  }
+  60% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
 
 /* Restore original animation rules */
 .hero-content h1,
@@ -370,6 +395,21 @@ footer {
   }
 }
 
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  }
+}
+
 .pulse-glow {
   animation: pulse-glow 2s infinite;
 }
@@ -550,6 +590,7 @@ footer {
   font-size: 1.8rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
+  animation: pulse 2s infinite;
 }
 
 .arrow-btn:hover {
