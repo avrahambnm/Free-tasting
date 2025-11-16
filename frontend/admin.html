@@ -1,1184 +1,824 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>מערכת ניהול - רשומים</title>
-    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <title>מערכת ניהול לידים</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Remixicon Icons CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    
+    <!-- 
+      הערה חשובה בנוגע ל-Neon (PostgreSQL):
+      
+      החיבור למסד נתונים מסוג PostgreSQL (כמו Neon) ישירות מקוד צד-לקוח (דפדפן, HTML, JavaScript)
+      הוא *בלתי אפשרי* ומהווה *פרצת אבטחה חמורה מאוד*. 
+
+      1.  טכנולוגית: דפדפנים לא יכולים "לדבר" בפרוטוקול של PostgreSQL. הם מדברים HTTP.
+      2.  אבטחתית: חיבור כזה ידרוש לשים את הסיסמה למסד הנתונים שלך (npg_gb3...) בתוך קובץ ה-HTML.
+          כל אדם שיבקר באתר יוכל לראות את הסיסמה, לגשת לכל המידע שלך, ולמחוק אותו.
+
+      לכן, **השארתי את החיבור ל-Firebase Firestore**.
+      Firestore תוכנן בדיוק למטרה זו: חיבור מאובטח וישיר מהדפדפן למסד נתונים,
+      מבלי לחשוף סיסמאות ומבלי להזדקק לשרת. 
+      זהו הפתרון הנכון, המאובטח והמודרני ליישום כזה.
+      שיפרתי את החיבור ל-Firestore כדי שיהיה מאובטח ואישי לכל משתמש.
+    -->
+
     <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: "#3b82f6",
-              secondary: "#10b981",
+        // הגדרות וריאבלים גלובליים (חובה)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        // הגדרות Tailwind: התאמה אישית של צבעים וגופנים
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6', // Blue-500
+                        accent: '#ef4444',  // Red-500
+                    },
+                    fontFamily: {
+                        sans: ['Heebo', 'sans-serif'],
+                        logo: ['Heebo', 'sans-serif'],
+                    },
+                },
             },
-            borderRadius: {
-              none: "0px",
-              sm: "4px",
-              DEFAULT: "8px",
-              md: "12px",
-              lg: "16px",
-              xl: "20px",
-              "2xl": "24px",
-              "3xl": "32px",
-              full: "9999px",
-              button: "8px",
-            },
-          },
-        },
-      };
+        }
     </script>
+    
+    <!-- Heebo Font -->
     <style>
-      :where([class^="ri-"])::before {
-        content: "\f3c2";
-      }
-
-      .fade-in {
-        animation: fadeIn 0.5s ease-in-out;
-      }
-
-      .fade-out {
-        animation: fadeOut 0.3s ease-in-out;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@100..900&display=swap');
+        
+        /* Custom shadow for a softer look */
+        .shadow-xl-soft {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+        /* Custom hover effect */
+        .hover-float {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-      }
-
-      @keyframes fadeOut {
-        from {
-          opacity: 1;
-          transform: translateY(0);
+        .hover-float:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        to {
-          opacity: 0;
-          transform: translateY(-10px);
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-      }
-
-      .spinner {
-        animation: spin 1s linear infinite;
-      }
-
-      @keyframes spin {
-        from {
-          transform: rotate(0deg);
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(100, 116, 139, 0.6); /* Slate-500 */
+            border-radius: 3px;
         }
-        to {
-          transform: rotate(360deg);
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
         }
-      }
-
-      .slide-down {
-        animation: slideDown 0.3s ease-out;
-      }
-
-      @keyframes slideDown {
-        from {
-          transform: translateY(-100%);
-          opacity: 0;
+        /* Animation effects */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        to {
-          transform: translateY(0);
-          opacity: 1;
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0; /* Start hidden */
         }
-      }
-
-      .pulse-success {
-        animation: pulseSuccess 0.6s ease-in-out;
-      }
-
-      @keyframes pulseSuccess {
-        0% {
-          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        .fade-in-delay {
+            animation: fadeIn 0.6s ease-out 0.2s forwards;
+            opacity: 0; /* Start hidden */
         }
-        70% {
-          box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+        
+        .custom-scrollbar {
+            scroll-behavior: smooth;
         }
-        100% {
-          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+
+        /* הסתרת דסקטופ (כדי שהטבלה תיראה טוב במובייל) */
+        @media (max-width: 767px) {
+            .desktop-only-header {
+                display: none;
+            }
+            /* Card view for mobile */
+            .mobile-card {
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 12px;
+                background-color: white;
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            }
+            .mobile-card-header {
+                border-bottom: 1px solid #f3f4f6;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+            .mobile-card div:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+            .mobile-card-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 4px 0;
+            }
+            .mobile-card-label {
+                font-weight: 500;
+                color: #6b7280; /* Gray-500 */
+                font-size: 0.875rem;
+            }
+            .mobile-card-value {
+                font-weight: 600;
+                color: #1f2937; /* Gray-800 */
+                font-size: 0.875rem;
+            }
         }
-      }
-
-      .hover-scale {
-        transition: transform 0.2s ease-in-out;
-      }
-
-      .hover-scale:hover {
-        transform: scale(1.05);
-      }
-
-      .glass-effect {
-        backdrop-filter: blur(10px);
-        background: rgba(255, 255, 255, 0.9);
-      }
-
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background: #f1f5f9;
-        border-radius: 3px;
-      }
-
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 3px;
-      }
-
-      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
     </style>
-  </head>
-  <body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-    <!-- Loading Overlay -->
+</head>
+<body class="bg-slate-50">
+    <!-- Overlay טעינה -->
     <div
       id="loadingOverlay"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+      class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center"
     >
-      <div class="glass-effect p-6 rounded-2xl flex items-center gap-3">
-        <div class="w-6 h-6 flex items-center justify-center">
-          <i class="ri-loader-4-line text-primary spinner ri-lg"></i>
-        </div>
-        <span class="text-gray-700 font-medium">טוען...</span>
+      <div class="text-center p-6 bg-white rounded-xl shadow-2xl">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-3"></div>
+        <p class="text-lg font-medium text-gray-700">מתחבר ומאמת נתונים...</p>
       </div>
     </div>
 
-    <!-- Header -->
-    <header class="bg-white shadow-lg border-b border-gray-100">
-      <div class="max-w-7xl mx-auto px-6 py-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-4">
-            <div
-              class="w-10 h-10 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center"
+    <!-- תפריט צד (Sidebar) -->
+    <aside
+      id="sidebar"
+      class="fixed top-0 right-0 h-full w-64 bg-slate-900 shadow-xl-soft z-40 transform translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col"
+    >
+        <!-- לוגו -->
+        <div class="p-6 text-center border-b border-slate-700">
+          <a href="#" class="flex items-center justify-center gap-2">
+            <span
+              class="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center"
             >
               <i class="ri-admin-line text-white ri-lg"></i>
-            </div>
-            <div>
-              <h1 class="text-2xl font-bold text-gray-900">
-                מערכת ניהול מנויים
-              </h1>
-              <p class="text-sm text-gray-500">ניהול מתקדם של רשימת התפוצה</p>
-            </div>
-          </div>
+            </span>
+            <span class="text-2xl font-logo text-slate-100">ניהול לידים</span>
+          </a>
+        </div>
+
+        <!-- ניווט -->
+        <nav class="flex-1 p-4 space-y-2 custom-scrollbar overflow-y-auto">
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-medium transition-colors"
+          >
+            <i class="ri-dashboard-line ri-lg"></i>
+            <span>דשבורד</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-slate-700 hover:text-white transition-colors"
+          >
+            <i class="ri-group-line ri-lg"></i>
+            <span>לידים</span>
+          </a>
+          <!-- הוסרו קישורים לא רלוונטיים -->
+        </nav>
+
+        <!-- פרופיל משתמש בתחתית -->
+        <div class="p-4 border-t border-slate-700">
           <div class="flex items-center gap-3">
-            <button
-              id="refreshBtn"
-              class="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors !rounded-button"
-            >
-              <i class="ri-refresh-line text-gray-600"></i>
-            </button>
-            <button
-              id="exportBtn"
-              class="w-10 h-10 flex items-center justify-center bg-secondary hover:bg-green-600 text-white rounded-xl transition-colors !rounded-button"
-            >
-              <i class="ri-download-line"></i>
-            </button>
             <div
-              class="w-10 h-10 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center"
+              class="w-10 h-10 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full flex items-center justify-center"
             >
               <i class="ri-user-line text-white"></i>
             </div>
+            <div>
+              <p id="userName" class="font-medium text-slate-100">טוען...</p>
+              <p class="text-sm text-slate-400">מנהל</p>
+            </div>
+            <button class="mr-auto text-slate-400 hover:text-white" onclick="console.log('התנתקות');">
+              <i class="ri-logout-box-r-line"></i>
+            </button>
+          </div>
+          <div class="mt-4">
+             <p class="text-xs text-slate-400">מזהה משתמש:</p>
+             <p id="userIdDisplay" class="text-xs text-slate-300 break-all">טוען...</p>
           </div>
         </div>
-      </div>
-    </header>
+    </aside>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-6 py-8">
-      <!-- Alert Messages -->
-      <div id="alertContainer" class="mb-6"></div>
+    <!-- שכבת רקע למובייל (לסגירת התפריט) -->
+    <div
+      id="sidebarBackdrop"
+      class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"
+      onclick="toggleSidebar()"
+    ></div>
 
-      <!-- Dashboard Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div
-          class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover-scale"
+    <!-- תוכן ראשי -->
+    <main class="md:mr-64 p-4 md:p-8 min-h-screen">
+        <!-- כותרת עליונה ודשבורד -->
+        <header
+          class="flex items-center justify-between mb-6 md:mb-8 fade-in-delay"
         >
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-500 mb-1">סך הכל מנויים</p>
-              <p id="totalSubscribers" class="text-2xl font-bold text-gray-900">
-                0
-              </p>
-            </div>
-            <div
-              class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"
+          <h1 class="text-3xl font-logo text-gray-800">דשבורד ראשי</h1>
+          <div class="flex items-center gap-3">
+            <!-- כפתור פתיחת תפריט במובייל -->
+            <button
+              id="menuButton"
+              class="md:hidden text-gray-700 hover:text-primary p-2"
+              onclick="toggleSidebar()"
             >
-              <i class="ri-user-line text-primary ri-lg"></i>
-            </div>
+              <i class="ri-menu-line ri-xl"></i>
+            </button>
+            <!-- כפתור התראות -->
+            <button
+              class="bg-white rounded-full p-2 text-gray-700 hover:bg-gray-100 shadow-sm border border-gray-200 transition-colors"
+            >
+              <i class="ri-notification-3-line"></i>
+            </button>
           </div>
-        </div>
+        </header>
 
-        <div
-          class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover-scale"
-        >
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-500 mb-1">הרשמות היום</p>
-              <p
-                id="todaySubscribers"
-                class="text-2xl font-bold text-secondary"
+        <section>
+            <!-- סקירה כללית (כרטיסיות) - פושט -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+              <!-- כרטיסיה 1 -->
+              <div
+                class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-5 shadow-xl shadow-blue-500/30 hover-float fade-in"
               >
-                0
-              </p>
-            </div>
-            <div
-              class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center"
-            >
-              <i class="ri-user-add-line text-secondary ri-lg"></i>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover-scale"
-        >
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-500 mb-1">הודעות נשלחו</p>
-              <p id="messagesSent" class="text-2xl font-bold text-orange-500">
-                0
-              </p>
-            </div>
-            <div
-              class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center"
-            >
-              <i class="ri-mail-send-line text-orange-500 ri-lg"></i>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover-scale"
-        >
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-500 mb-1">שיעור פתיחה</p>
-              <p id="openRate" class="text-2xl font-bold text-purple-500">0%</p>
-            </div>
-            <div
-              class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"
-            >
-              <i class="ri-bar-chart-line text-purple-500 ri-lg"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- Subscribers Management -->
-      <div
-        class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8"
-      >
-        <div class="p-6 border-b border-gray-100">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-semibold text-gray-900">רשימת מנויים</h2>
-            <div class="flex items-center gap-3">
-              <div class="relative">
-                <input
-                  type="text"
-                  id="searchInput"
-                  placeholder="חיפוש לפי אימייל..."
-                  class="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                />
-                <div
-                  class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center"
-                >
-                  <i class="ri-search-line text-gray-400"></i>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm font-medium text-blue-100 mb-1">
+                      סך הכל לידים
+                    </p>
+                    <p id="totalLeads" class="text-3xl font-bold">
+                      0
+                    </p>
+                  </div>
+                  <div
+                    class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center"
+                  >
+                    <i class="ri-group-line text-white ri-lg"></i>
+                  </div>
                 </div>
               </div>
-              <select
-                id="rowsPerPage"
-                class="pr-8 pl-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+              <!-- כרטיסיה 2 -->
+              <div
+                class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl p-5 shadow-xl shadow-green-500/30 hover-float fade-in"
               >
-                <option value="10">10 שורות</option>
-                <option value="25">25 שורות</option>
-                <option value="50">50 שורות</option>
-                <option value="100">100 שורות</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto custom-scrollbar">
-          <table class="w-full">
-            <thead class="bg-gray-50">
-              <tr>
-                <th
-                  class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  <div
-                    class="flex items-center gap-2 cursor-pointer"
-                    id="sortFullName"
-                  >
-                    <span>שם מלא</span>
-                    <i class="ri-arrow-up-down-line text-gray-400"></i>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm font-medium text-green-100 mb-1">
+                      לידים חדשים היום
+                    </p>
+                    <p
+                      id="todayLeads"
+                      class="text-3xl font-bold"
+                    >
+                      0
+                    </p>
                   </div>
-                </th>
-                <th
-                  class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
                   <div
-                    class="flex items-center gap-2 cursor-pointer"
-                    id="sortPhone"
+                    class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center"
                   >
-                    <span>טלפון</span>
-                    <i class="ri-arrow-up-down-line text-gray-400"></i>
+                    <i class="ri-user-add-line text-white ri-lg"></i>
                   </div>
-                </th>
-                <th
-                  class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  <div
-                    class="flex items-center gap-2 cursor-pointer"
-                    id="sortEmail"
-                  >
-                    <span>כתובת אימייל</span>
-                    <i class="ri-arrow-up-down-line text-gray-400"></i>
-                  </div>
-                </th>
-                <th
-                  class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  <div
-                    class="flex items-center gap-2 cursor-pointer"
-                    id="sortDate"
-                  >
-                    <span>תאריך הרשמה</span>
-                    <i class="ri-arrow-up-down-line text-gray-400"></i>
-                  </div>
-                </th>
-                <th
-                  class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  פעולות
-                </th>
-              </tr>
-            </thead>
-            <tbody
-              id="subscribersTable"
-              class="bg-white divide-y divide-gray-200"
-            >
-              <!-- רשומים יתווספו כאן דינמית -->
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pagination -->
-        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-          <div class="flex items-center justify-between">
-            <div class="text-sm text-gray-500">
-              מציג <span id="showingFrom">0</span> עד
-              <span id="showingTo">0</span> מתוך
-              <span id="totalRows">0</span> תוצאות
-            </div>
-            <div class="flex items-center gap-2">
-              <button
-                id="prevPage"
-                class="px-3 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed !rounded-button"
-              >
-                <i class="ri-arrow-right-line"></i>
-              </button>
-              <div id="pageNumbers" class="flex items-center gap-1"></div>
-              <button
-                id="nextPage"
-                class="px-3 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed !rounded-button"
-              >
-                <i class="ri-arrow-left-line"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Message Center -->
-      <div
-        class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
-      >
-        <div class="p-6 border-b border-gray-100">
-          <h2 class="text-xl font-semibold text-gray-900 mb-2">מרכז הודעות</h2>
-          <p class="text-gray-500">שלח הודעות למנויים שלך</p>
-        </div>
-
-        <div class="p-6">
-          <form id="messageForm" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2"
-                  >נושא ההודעה</label
-                >
-                <input
-                  type="text"
-                  id="subject"
-                  required
-                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                  placeholder="הכנס נושא להודעה..."
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2"
-                  >תבנית הודעה</label
-                >
-                <select
-                  id="messageTemplate"
-                  class="w-full pr-8 pl-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                >
-                  <option value="">בחר תבנית...</option>
-                  <option value="welcome">הודעת ברוכים הבאים</option>
-                  <option value="newsletter">ניוזלטר שבועי</option>
-                  <option value="promotion">הודעת קידום מכירות</option>
-                  <option value="update">עדכון מוצר</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >תוכן ההודעה</label
-              >
-              <div class="border border-gray-200 rounded-xl overflow-hidden">
-                <div
-                  class="bg-gray-50 px-4 py-2 border-b border-gray-200 flex items-center gap-2"
-                >
-                  <button
-                    type="button"
-                    class="p-1 hover:bg-gray-200 rounded !rounded-button"
-                    id="boldBtn"
-                  >
-                    <i class="ri-bold text-gray-600"></i>
-                  </button>
-                  <button
-                    type="button"
-                    class="p-1 hover:bg-gray-200 rounded !rounded-button"
-                    id="italicBtn"
-                  >
-                    <i class="ri-italic text-gray-600"></i>
-                  </button>
-                  <button
-                    type="button"
-                    class="p-1 hover:bg-gray-200 rounded !rounded-button"
-                    id="linkBtn"
-                  >
-                    <i class="ri-link text-gray-600"></i>
-                  </button>
-                  <div class="w-px h-4 bg-gray-300 mx-1"></div>
-                  <button
-                    type="button"
-                    class="p-1 hover:bg-gray-200 rounded !rounded-button"
-                    id="previewBtn"
-                  >
-                    <i class="ri-eye-line text-gray-600"></i>
-                  </button>
                 </div>
-                <textarea
-                  id="messageText"
-                  required
-                  rows="8"
-                  class="w-full px-4 py-3 border-none focus:ring-0 resize-none text-sm"
-                  placeholder="כתוב את תוכן ההודעה כאן..."
-                ></textarea>
+              </div>
+            </div>
+            
+            <!-- אזור גרפים - הוסר -->
+
+            <!-- ניהול לידים (מנויים לשעבר) -->
+            <div
+              class="bg-white rounded-2xl shadow-xl-soft border border-gray-100 overflow-hidden mb-8 fade-in-delay"
+            >
+              <div class="p-6 border-b border-gray-100">
+                <h2 class="text-xl font-semibold text-gray-800">ניהול לידים</h2>
+              </div>
+              <div class="overflow-x-auto custom-scrollbar">
+                <!-- טבלת דסקטופ -->
+                <table class="min-w-full divide-y divide-gray-200 hidden md:table">
+                  <thead class="bg-gray-50 desktop-only-header">
+                    <tr>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        שם מלא
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        אימייל
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        טלפון
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        תאריך הרשמה
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        סטטוס
+                      </th>
+                      <th scope="col" class="relative px-6 py-3">
+                        <span class="sr-only">פעולות</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="leadListBody" class="bg-white divide-y divide-gray-200">
+                    <!-- שורות לידים יטענו כאן -->
+                    <tr>
+                      <td colspan="6" class="p-6 text-center text-gray-500">
+                        טוען נתונים...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- תצוגת מובייל (כרטיסים) -->
+                <div id="mobileLeadList" class="md:hidden p-4">
+                  <!-- כרטיסיות לידים יטענו כאן -->
+                   <div class="p-6 text-center text-gray-500">
+                      טוען נתונים...
+                   </div>
+                </div>
               </div>
             </div>
 
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-4">
-                <label class="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="scheduleMessage"
-                    class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                  />
-                  <span class="text-sm text-gray-700">תזמן שליחה</span>
-                </label>
-                <input
-                  type="datetime-local"
-                  id="scheduleTime"
-                  class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50"
-                  disabled
-                />
-              </div>
-              <div class="flex items-center gap-3">
-                <button
-                  type="button"
-                  id="saveDraftBtn"
-                  class="px-6 py-3 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors text-sm font-medium !rounded-button whitespace-nowrap"
-                >
-                  שמור כטיוטה
-                </button>
-                <button
-                  type="submit"
-                  class="px-8 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors text-sm font-medium !rounded-button whitespace-nowrap"
-                >
-                  שלח הודעה
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
+            <!-- מרכז הודעות AI - הוסר -->
+
+        </section>
     </main>
 
-    <!-- Delete Confirmation Modal -->
-    <div
-      id="deleteModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
-    >
-      <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 slide-down">
-        <div class="flex items-center gap-3 mb-4">
-          <div
-            class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center"
-          >
-            <i class="ri-delete-bin-line text-red-500"></i>
+    <!-- מודל תצוגה מקדימה - הוסר -->
+
+    <!-- מודל חדש לניהול ליד -->
+    <div id="leadManagementModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+      <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden fade-in-delay">
+          <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+              <h3 class="text-lg font-semibold text-gray-800">ניהול ליד: <span id="modalLeadName" class="text-primary"></span></h3>
+              <button id="closeLeadModal" class="text-gray-400 hover:text-gray-600 p-1">
+                  <i class="ri-close-line ri-lg"></i>
+              </button>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900">אישור מחיקה</h3>
-        </div>
-        <p class="text-gray-600 mb-6">
-          האם אתה בטוח שברצונך למחוק את המנוי
-          <span id="deleteEmail" class="font-medium"></span>?
-        </p>
-        <div class="flex items-center gap-3 justify-end">
-          <button
-            id="cancelDelete"
-            class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors !rounded-button whitespace-nowrap"
-          >
-            ביטול
-          </button>
-          <button
-            id="confirmDelete"
-            class="px-4 py-2 bg-red-500 text-white hover:bg-red-600 rounded-lg transition-colors !rounded-button whitespace-nowrap"
-          >
-            מחק
-          </button>
-        </div>
-      </div>
-    </div>
+          
+          <div class="p-6 space-y-4">
+              <!-- פרטי הליד (לקריאה בלבד) -->
+              <div>
+                <p class="text-sm text-gray-500"><strong>אימייל:</strong> <span id="modalLeadEmail"></span></p>
+                <p class="text-sm text-gray-500"><strong>טלפון:</strong> <span id="modalLeadPhone"></span></p>
+                <p class="text-sm text-gray-500"><strong>תאריך יצירה:</strong> <span id="modalLeadDate"></span></p>
+              </div>
 
-    <!-- Message Preview Modal -->
-    <div
-      id="previewModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
-    >
-      <div
-        class="bg-white rounded-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden slide-down"
-      >
-        <div
-          class="p-6 border-b border-gray-200 flex items-center justify-between"
-        >
-          <h3 class="text-lg font-semibold text-gray-900">תצוגה מקדימה</h3>
-          <button
-            id="closePreview"
-            class="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-lg !rounded-button"
-          >
-            <i class="ri-close-line text-gray-600"></i>
-          </button>
-        </div>
-        <div class="p-6 custom-scrollbar overflow-y-auto max-h-96">
-          <div id="previewContent" class="prose prose-sm max-w-none"></div>
-        </div>
-      </div>
-    </div>
+              <input type="hidden" id="modalLeadId">
 
-    <script id="main-functionality">
-      const API_URL = "/api";
-      let subscribers = [];
-      let filteredSubscribers = [];
-      let currentPage = 1;
-      let rowsPerPage = 10;
-      let sortField = "date";
-      let sortDirection = "desc";
+              <!-- טופס עדכון סטטוס והערות -->
+              <div>
+                  <label for="modalLeadStatus" class="block text-sm font-medium text-gray-700 mb-2">עדכן סטטוס</label>
+                  <select id="modalLeadStatus" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm">
+                      <option value="חדש">חדש</option>
+                      <option value="נוצר קשר">נוצר קשר</option>
+                      <option value="בתהליך">בתהליך</option>
+                      <option value="נסגר (טופל)">נסגר (טופל)</option>
+                      <option value="לא רלוונטי">לא רלוונטי</option>
+                  </select>
+              </div>
 
-      // Show loading overlay
-      function showLoading() {
-        document.getElementById("loadingOverlay").classList.remove("hidden");
-      }
+              <div>
+                  <label for="modalLeadNotes" class="block text-sm font-medium text-gray-700 mb-2">הערות (פרטי, לעצמך)</label>
+                  <textarea 
+                    id="modalLeadNotes" 
+                    rows="5" 
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm custom-scrollbar"
+                    placeholder="רשום כאן סיכום שיחה, תאריך פגישה, או כל הערה רלוונטית..."
+                  ></textarea>
+              </div>
 
-      // Hide loading overlay
-      function hideLoading() {
-        document.getElementById("loadingOverlay").classList.add("hidden");
-      }
-
-      // Show alert message
-      function showAlert(message, type = "error") {
-        const container = document.getElementById("alertContainer");
-        const alertDiv = document.createElement("div");
-
-        const colors = {
-          success: "bg-green-50 border-green-200 text-green-800",
-          error: "bg-red-50 border-red-200 text-red-800",
-          warning: "bg-yellow-50 border-yellow-200 text-yellow-800",
-          info: "bg-blue-50 border-blue-200 text-blue-800",
-        };
-
-        const icons = {
-          success: "ri-check-line",
-          error: "ri-error-warning-line",
-          warning: "ri-alert-line",
-          info: "ri-information-line",
-        };
-
-        alertDiv.className = `${colors[type]} border rounded-xl p-4 mb-4 fade-in flex items-center gap-3`;
-        alertDiv.innerHTML = `
-                <div class="w-5 h-5 flex items-center justify-center">
-                    <i class="${icons[type]}"></i>
-                </div>
-                <span class="flex-1">${message}</span>
-                <button onclick="this.parentElement.remove()" class="w-5 h-5 flex items-center justify-center hover:bg-black hover:bg-opacity-10 rounded">
-                    <i class="ri-close-line"></i>
+              <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                <button id="cancelLeadUpdate" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                  ביטול
                 </button>
-            `;
+                <button id="saveLeadUpdate" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                  <i class="ri-save-line"></i>
+                  שמור שינויים
+                </button>
+              </div>
+          </div>
+      </div>
+    </div>
 
-        container.appendChild(alertDiv);
+
+    <!-- מודל התראות -->
+    <div id="alertModal" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-[60] hidden">
+      <div id="alertContent" role="alert" class="px-6 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2">
+        <!-- תוכן ההתראה יוכנס לכאן -->
+      </div>
+    </div>
+</body>
+
+<script type="module">
+    // ייבוא Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { 
+        getAuth, 
+        signInAnonymously, 
+        signInWithCustomToken, 
+        onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { 
+        getFirestore, 
+        collection, 
+        query, 
+        onSnapshot, 
+        serverTimestamp,
+        doc,            // חדש: ייבוא לעבודה עם מסמך ספציפי
+        updateDoc,      // חדש: ייבוא לפעולת עדכון
+        setLogLevel 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // הגדרת משתנים גלובליים
+    let db;
+    let auth;
+    let userId = null;
+    let isAuthReady = false;
+    let allLeads = []; // רשימת הלידים
+    let leadsUnsubscribe = null; // פונקציה לניתוק המאזין של Firestore
+
+    // הפעלת לוגינג (מועבר ל-error כדי למנוע הצפת קונסול)
+    setLogLevel('error'); 
+
+    // --- כלי עזר כלליים ---
+
+    /** מציג או מסתיר את שכבת הטעינה */
+    function showLoading(show = true) {
+      document.getElementById("loadingOverlay").classList.toggle("hidden", !show);
+    }
+
+    /** הצגת התראה צפה עם סגנון מתאים */
+    function showAlert(message, type = "info") {
+        const modal = document.getElementById("alertModal");
+        const content = document.getElementById("alertContent");
+        
+        let bgColor, textColor, icon;
+
+        switch (type) {
+            case "success":
+                bgColor = "bg-green-500";
+                textColor = "text-white";
+                icon = "ri-check-circle-line";
+                break;
+            case "error":
+                bgColor = "bg-red-500";
+                textColor = "text-white";
+                icon = "ri-error-warning-line";
+                break;
+            case "warning":
+                bgColor = "bg-yellow-500";
+                textColor = "text-white";
+                icon = "ri-alert-line";
+                break;
+            case "info":
+            default:
+                bgColor = "bg-blue-500";
+                textColor = "text-white";
+                icon = "ri-information-line";
+                break;
+        }
+
+        content.className = `px-6 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2 ${bgColor} ${textColor}`;
+        content.innerHTML = `<i class="${icon} ri-lg"></i><span>${message}</span>`;
+        modal.classList.remove("hidden");
 
         setTimeout(() => {
-          if (alertDiv.parentElement) {
-            alertDiv.classList.add("fade-out");
-            setTimeout(() => alertDiv.remove(), 300);
-          }
-        }, 5000);
+            modal.classList.add("hidden");
+        }, 3000);
+    }
+    
+    /** טוגל תפריט צד למובייל */
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const backdrop = document.getElementById("sidebarBackdrop");
+      const isHidden = sidebar.classList.contains("translate-x-full");
+
+      if (isHidden) {
+        sidebar.classList.remove("translate-x-full");
+        backdrop.classList.remove("hidden");
+      } else {
+        sidebar.classList.add("translate-x-full");
+        backdrop.classList.add("hidden");
+      }
+    }
+    window.toggleSidebar = toggleSidebar; // הפיכת הפונקציה לגלובלית
+
+    // --- לוגיקת AI: הוסרה ---
+
+    // --- לוגיקת גרפים (ECharts): הוסרה ---
+
+    // --- לוגיקת UI (עדכונים) ---
+
+    /** פונקציה לעיצוב תאריך ושעה */
+    function formatLeadDate(timestamp) {
+      if (!timestamp) {
+        return "N/A";
+      }
+      // המרה מ-Firebase Timestamp ל-Date
+      const date = timestamp.toDate();
+      return date.toLocaleString('he-IL', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    /** פונקציה לקבלת תג סטטוס מעוצב */
+    function getStatusBadge(status) {
+      status = status || 'חדש'; // ברירת מחדל
+      let colorClasses = '';
+      switch (status) {
+        case 'חדש':
+          colorClasses = 'bg-blue-100 text-blue-800';
+          break;
+        case 'נוצר קשר':
+          colorClasses = 'bg-yellow-100 text-yellow-800';
+          break;
+        case 'בתהליך':
+          colorClasses = 'bg-purple-100 text-purple-800';
+          break;
+        case 'נסגר (טופל)':
+          colorClasses = 'bg-green-100 text-green-800';
+          break;
+        case 'לא רלוונטי':
+          colorClasses = 'bg-gray-100 text-gray-800';
+          break;
+        default:
+          colorClasses = 'bg-gray-100 text-gray-600';
+      }
+      return `<span class="px-2.5 py-0.5 rounded-full text-xs font-medium ${colorClasses}">${status}</span>`;
+    }
+
+    /** עדכון כלל הממשק על בסיס נתונים חדשים */
+    function updateUI(leads) {
+      // 1. עדכון כרטיסיות
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // תחילת היום
+
+      const todayLeads = leads.filter(lead => {
+        if (!lead.createdAt) return false;
+        return lead.createdAt.toDate() >= today;
+      }).length;
+
+      document.getElementById('totalLeads').textContent = leads.length;
+      document.getElementById('todayLeads').textContent = todayLeads;
+
+      // 2. עדכון טבלה (דסקטופ)
+      const listBody = document.getElementById('leadListBody');
+      const mobileList = document.getElementById('mobileLeadList');
+      listBody.innerHTML = ''; // ניקוי טוען
+      mobileList.innerHTML = ''; // ניקוי טוען
+
+      if (leads.length === 0) {
+        const emptyMessage = `<td colspan="6" class="p-6 text-center text-gray-500">עדיין אין לידים. ברגע שיתקבל ליד חדש, הוא יופיע כאן.</td>`;
+        listBody.innerHTML = `<tr>${emptyMessage}</tr>`;
+        mobileList.innerHTML = `<div class="p-6 text-center text-gray-500">עדיין אין לידים.</div>`;
+        return;
       }
 
-      // Load subscribers from server
-      async function loadSubscribers() {
-        try {
-          showLoading();
-          const res = await fetch(`${API_URL}/subscribers`);
-          if (!res.ok) throw new Error("שגיאה בטעינת הרשומים");
+      leads.forEach(lead => {
+        const formattedDate = formatLeadDate(lead.createdAt);
 
-          subscribers = await res.json();
-          filteredSubscribers = [...subscribers];
-          updateStats();
-          renderTable();
-          hideLoading();
-        } catch (err) {
-          hideLoading();
-          showAlert(err.message, "error");
-        }
-      }
+        // יצירת שורת טבלה (דסקטופ)
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-gray-50 transition-colors";
+        tr.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">${lead.name || 'N/A'}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-600">${lead.email || 'N/A'}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-600">${lead.phone || 'N/A'}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-600">${formattedDate}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                ${getStatusBadge(lead.status)}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
+                <button class="text-primary hover:text-blue-700 manage-lead-btn" data-id="${lead.id}">
+                    ניהול
+                </button>
+            </td>
+        `;
+        listBody.appendChild(tr);
 
-      // Update dashboard statistics
-      function updateStats() {
-        const total = subscribers.length;
-        const today = new Date().toDateString();
-        const todayCount = subscribers.filter(
-          (sub) => new Date(sub.date).toDateString() === today
-        ).length;
+        // יצירת כרטיס מובייל
+        const mobileCard = document.createElement('div');
+        mobileCard.className = 'mobile-card';
+        mobileCard.innerHTML = `
+            <div class="mobile-card-header flex justify-between items-center">
+                <span class="font-bold text-lg text-gray-900">${lead.name || 'N/A'}</span>
+                ${getStatusBadge(lead.status)}
+            </div>
+            <div class="space-y-2 text-sm">
+                <div class="mobile-card-row">
+                    <span class="mobile-card-label">אימייל:</span>
+                    <span class="mobile-card-value">${lead.email || 'N/A'}</span>
+                </div>
+                <div class="mobile-card-row">
+                    <span class="mobile-card-label">טלפון:</span>
+                    <span class="mobile-card-value">${lead.phone || 'N/A'}</span>
+                </div>
+                <div class="mobile-card-row">
+                    <span class="mobile-card-label">תאריך:</span>
+                    <span class="mobile-card-value">${formattedDate}</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <button class="w-full text-center px-4 py-2 bg-primary text-white rounded-lg manage-lead-btn" data-id="${lead.id}">
+                    ניהול ליד
+                </button>
+            </div>
+        `;
+        mobileList.appendChild(mobileCard);
+      });
 
-        document.getElementById("totalSubscribers").textContent = total;
-        document.getElementById("todaySubscribers").textContent = todayCount;
-        document.getElementById("messagesSent").textContent = Math.floor(
-          total * 0.8
-        );
-        document.getElementById("openRate").textContent = "68%";
-      }
-
-      
-      // Sort subscribers
-      function sortSubscribers(field) {
-        if (sortField === field) {
-          sortDirection = sortDirection === "asc" ? "desc" : "asc";
-        } else {
-          sortField = field;
-          sortDirection = "desc";
-        }
-
-        filteredSubscribers.sort((a, b) => {
-          let aVal = field === "date" ? new Date(a[field]) : a[field];
-          let bVal = field === "date" ? new Date(b[field]) : b[field];
-
-          if (sortDirection === "asc") {
-            return aVal > bVal ? 1 : -1;
-          } else {
-            return aVal < bVal ? 1 : -1;
-          }
-        });
-
-        currentPage = 1;
-        renderTable();
-        updateSortIcons();
-      }
-
-      // Update sort icons
-      function updateSortIcons() {
-        document.querySelectorAll('[id^="sort"] i').forEach((icon) => {
-          icon.className = "ri-arrow-up-down-line text-gray-400";
-        });
-
-        const activeIcon = document.querySelector(
-          `#sort${sortField.charAt(0).toUpperCase() + sortField.slice(1)} i`
-        );
-        if (activeIcon) {
-          activeIcon.className =
-            sortDirection === "asc"
-              ? "ri-arrow-up-line text-primary"
-              : "ri-arrow-down-line text-primary";
-        }
-      }
-
-      // Filter subscribers
-      function filterSubscribers(searchTerm) {
-        filteredSubscribers = subscribers.filter((sub) =>
-          sub.email.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        currentPage = 1;
-        renderTable();
-      }
-
-      // Render subscribers table
-      function renderTable() {
-        const tbody = document.getElementById("subscribersTable");
-        const startIndex = (currentPage - 1) * rowsPerPage;
-        const endIndex = startIndex + rowsPerPage;
-        const pageData = filteredSubscribers.slice(startIndex, endIndex);
-
-        if (pageData.length === 0) {
-          tbody.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="px-6 py-12 text-center text-gray-500">
-                            <div class="flex flex-col items-center gap-2">
-                                <i class="ri-inbox-line text-4xl text-gray-300"></i>
-                                <p>אין מנויים להצגה</p>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-        } else {
-          tbody.innerHTML = pageData
-            .map(
-              (sub) => `
-      <tr class="hover:bg-gray-50 transition-colors fade-in">
-          <!-- שם מלא -->
-          <td class="px-6 py-4">
-              <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                      ${sub.fullname.charAt(0).toUpperCase()}
-                  </div>
-                  <span class="font-medium text-gray-900">${sub.fullname}</span>
-              </div>
-          </td>
-
-          <!-- טלפון -->
-          <td class="px-6 py-4 text-gray-600">
-              ${sub.phone || "-"}
-          </td>
-
-          <!-- אימייל -->
-          <td class="px-6 py-4 text-gray-600">
-              ${sub.email}
-          </td>
-
-          <!-- תאריך הרשמה -->
-          <td class="px-6 py-4 text-gray-600">
-              ${new Date(sub.date).toLocaleDateString("he-IL", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-          </td>
-
-          <!-- פעולות -->
-          <td class="px-6 py-4">
-              <div class="flex items-center gap-2">
-                  <button onclick="editSubscriber('${sub.email}')" 
-                          class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-primary hover:bg-blue-50 rounded-lg transition-colors !rounded-button"
-                          title="עריכה">
-                      <i class="ri-edit-line"></i>
-                  </button>
-                  <button onclick="showDeleteModal('${sub.email}')" 
-                          class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors !rounded-button"
-                          title="מחיקה">
-                      <i class="ri-delete-bin-line"></i>
-                  </button>
-              </div>
-          </td>
-      </tr>
-    `
-            )
-            .join("");
-        }
-
-        updatePagination();
-      }
-
-      // Update pagination
-      function updatePagination() {
-        const totalPages = Math.ceil(filteredSubscribers.length / rowsPerPage);
-        const startItem = (currentPage - 1) * rowsPerPage + 1;
-        const endItem = Math.min(
-          currentPage * rowsPerPage,
-          filteredSubscribers.length
-        );
-
-        document.getElementById("showingFrom").textContent =
-          filteredSubscribers.length > 0 ? startItem : 0;
-        document.getElementById("showingTo").textContent = endItem;
-        document.getElementById("totalRows").textContent =
-          filteredSubscribers.length;
-
-        const prevBtn = document.getElementById("prevPage");
-        const nextBtn = document.getElementById("nextPage");
-
-        prevBtn.disabled = currentPage === 1;
-        nextBtn.disabled = currentPage === totalPages || totalPages === 0;
-
-        // Generate page numbers
-        const pageNumbers = document.getElementById("pageNumbers");
-        pageNumbers.innerHTML = "";
-
-        for (
-          let i = Math.max(1, currentPage - 2);
-          i <= Math.min(totalPages, currentPage + 2);
-          i++
-        ) {
-          const button = document.createElement("button");
-          button.textContent = i;
-          button.className = `px-3 py-2 text-sm rounded-lg transition-colors !rounded-button ${
-            i === currentPage
-              ? "bg-primary text-white"
-              : "text-gray-600 hover:bg-gray-100"
-          }`;
-          button.onclick = () => {
-            currentPage = i;
-            renderTable();
-          };
-          pageNumbers.appendChild(button);
-        }
-      }
-
-      // Show delete confirmation modal
-      function showDeleteModal(email) {
-        document.getElementById("deleteEmail").textContent = email;
-        document.getElementById("deleteModal").classList.remove("hidden");
-        document.getElementById("confirmDelete").onclick = () =>
-          deleteSubscriber(email);
-      }
-
-      // Delete subscriber
-      async function deleteSubscriber(email) {
-        try {
-          showLoading();
-          const res = await fetch(`${API_URL}/subscribers`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
+      // הוספת Event Listeners לכפתורי הניהול
+      document.querySelectorAll('.manage-lead-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+              const leadId = btn.getAttribute('data-id');
+              const leadData = allLeads.find(l => l.id === leadId);
+              if (leadData) {
+                  openLeadModal(leadData);
+              }
           });
+      });
+    }
 
-          if (!res.ok) throw new Error("שגיאה במחיקת המנוי");
+    // --- לוגיקת מודל ניהול ליד ---
+    const leadModal = document.getElementById('leadManagementModal');
+    
+    function openLeadModal(lead) {
+      document.getElementById('modalLeadId').value = lead.id;
+      document.getElementById('modalLeadName').textContent = lead.name || 'N/A';
+      document.getElementById('modalLeadEmail').textContent = lead.email || 'N/A';
+      document.getElementById('modalLeadPhone').textContent = lead.phone || 'N/A';
+      document.getElementById('modalLeadDate').textContent = formatLeadDate(lead.createdAt);
+      document.getElementById('modalLeadStatus').value = lead.status || 'חדש';
+      document.getElementById('modalLeadNotes').value = lead.notes || '';
+      leadModal.classList.remove('hidden');
+    }
 
-          showAlert(`המנוי ${email} נמחק בהצלחה`, "success");
-          document.getElementById("deleteModal").classList.add("hidden");
-          await loadSubscribers();
-          hideLoading();
-        } catch (err) {
-          hideLoading();
-          showAlert(err.message, "error");
+    function closeLeadModal() {
+      leadModal.classList.add('hidden');
+    }
+
+    document.getElementById('closeLeadModal').addEventListener('click', closeLeadModal);
+    document.getElementById('cancelLeadUpdate').addEventListener('click', closeLeadModal);
+
+    // שמירת שינויים בליד
+    document.getElementById('saveLeadUpdate').addEventListener('click', async () => {
+      const saveBtn = document.getElementById('saveLeadUpdate');
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="ri-loader-4-line animate-spin"></i> שומר...';
+
+      const leadId = document.getElementById('modalLeadId').value;
+      const newStatus = document.getElementById('modalLeadStatus').value;
+      const newNotes = document.getElementById('modalLeadNotes').value;
+
+      if (!leadId) {
+        showAlert('שגיאה: לא זוהה מזהה ליד.', 'error');
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="ri-save-line"></i> שמור שינויים';
+        return;
+      }
+
+      try {
+        const leadDocRef = doc(db, getLeadsCollectionPath(), leadId);
+        await updateDoc(leadDocRef, {
+            status: newStatus,
+            notes: newNotes
+        });
+        
+        showAlert('הליד עודכן בהצלחה!', 'success');
+        closeLeadModal();
+
+      } catch (err) {
+        console.error("Error updating document: ", err);
+        showAlert('שגיאה בעדכון הליד: ' + err.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="ri-save-line"></i> שמור שינויים';
+      }
+    });
+
+
+    // --- לוגיקת Firebase ואימות ---
+
+    /** מחזיר את הנתיב הנכון והמאובטח לקולקשן הלידים */
+    function getLeadsCollectionPath() {
+        if (!userId) {
+            console.error("User ID is not set. Cannot determine collection path.");
+            return null; // לא מאפשר גישה אם אין משתמש
         }
-      }
+        // נתיב מאובטח: כל משתמש רואה רק את הנתונים של עצמו
+        return `/artifacts/${appId}/users/${userId}/leads`;
+    }
 
-      // Edit subscriber (placeholder)
-      function editSubscriber(email) {
-        showAlert("פונקציית עריכה תתווסף בקרוב", "info");
-      }
-
-      // Export subscribers to CSV
-      function exportSubscribers() {
-        const csvContent =
-          "data:text/csv;charset=utf-8," +
-          "Email,Registration Date\n" +
-          subscribers.map((sub) => `${sub.email},${sub.date}`).join("\n");
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute(
-          "download",
-          `subscribers_${new Date().toISOString().split("T")[0]}.csv`
-        );
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        showAlert("הקובץ יוצא בהצלחה", "success");
-      }
-
-      // Message templates
-      const messageTemplates = {
-        welcome: {
-          subject: "ברוכים הבאים למשפחה שלנו!",
-          content:
-            "שלום וברוכים הבאים!\n\nאנחנו שמחים שהצטרפת אלינו. תוכל לצפות לקבל עדכונים מעניינים ותוכן איכותי.\n\nבברכה,\nהצוות",
-        },
-        newsletter: {
-          subject: "הניוזלטר השבועי שלנו",
-          content:
-            "שלום רב,\n\nהנה העדכונים החשובים השבוע:\n\n• עדכון 1\n• עדכון 2\n• עדכון 3\n\nנשמח לשמוע את דעתכם!\n\nבברכה,\nהצוות",
-        },
-        promotion: {
-          subject: "הצעה מיוחדת רק עבורך!",
-          content:
-            "שלום,\n\nיש לנו הצעה מיוחדת רק עבורך! הנחה של 20% על כל המוצרים.\n\nהשתמש בקוד: SPECIAL20\n\nבברכה,\nהצוות",
-        },
-        update: {
-          subject: "עדכון חשוב על המוצר שלנו",
-          content:
-            "שלום,\n\nאנחנו מתרגשים לשתף איתכם עדכון חשוב על המוצר שלנו.\n\nפרטים נוספים באתר שלנו.\n\nבברכה,\nהצוות",
-        },
-      };
-
-      // Apply message template
-      function applyTemplate(templateKey) {
-        const template = messageTemplates[templateKey];
-        if (template) {
-          document.getElementById("subject").value = template.subject;
-          document.getElementById("messageText").value = template.content;
-        }
-      }
-
-      // Send message to subscribers
-      async function sendMessage(formData) {
-        try {
-          showLoading();
-
-          const res = await fetch(`${API_URL}/messages`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-          });
-
-          if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || "שגיאה בשליחת ההודעה");
-          }
-
-          showAlert("ההודעה נשלחה בהצלחה לכל המנויים", "success");
-          document.getElementById("messageForm").reset();
-        } catch (err) {
-          showAlert(err.message, "error");
-        } finally {
-          hideLoading();
-        }
-      }
-
-      // Show message preview
-      function showPreview() {
-        const subject = document.getElementById("subject").value;
-        const content = document.getElementById("messageText").value;
-
-        if (!subject || !content) {
-          showAlert("אנא מלא את כל השדות לפני התצוגה המקדימה", "warning");
+    /** מאזין לשינויים בקולקשן הלידים */
+    function attachLeadListener() {
+        const leadsPath = getLeadsCollectionPath();
+        if (!leadsPath) {
+          showAlert("שגיאת אימות. טען את הדף מחדש.", "error");
+          showLoading(false);
           return;
         }
 
-        const previewContent = document.getElementById("previewContent");
-        previewContent.innerHTML = `
-                <div class="border-b border-gray-200 pb-4 mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">${subject}</h3>
-                    <p class="text-sm text-gray-500 mt-1">נושא: ${subject}</p>
-                </div>
-                <div class="whitespace-pre-wrap text-gray-700">${content}</div>
-            `;
-
-        document.getElementById("previewModal").classList.remove("hidden");
-      }
-
-      // Initialize the application
-      document.addEventListener("DOMContentLoaded", function () {
-        loadSubscribers();
-      });
-    </script>
-
-    <script id="event-handlers">
-      document.addEventListener("DOMContentLoaded", function () {
-        // Search functionality
-        const searchInput = document.getElementById("searchInput");
-        let searchTimeout;
-        searchInput.addEventListener("input", function () {
-          clearTimeout(searchTimeout);
-          searchTimeout = setTimeout(() => {
-            filterSubscribers(this.value);
-          }, 300);
-        });
-
-        // Rows per page change
-        document
-          .getElementById("rowsPerPage")
-          .addEventListener("change", function () {
-            rowsPerPage = parseInt(this.value);
-            currentPage = 1;
-            renderTable();
-          });
-
-        // Sort functionality
-        document
-          .getElementById("sortEmail")
-          .addEventListener("click", () => sortSubscribers("email"));
-        document
-          .getElementById("sortDate")
-          .addEventListener("click", () => sortSubscribers("date"));
-
-        // Pagination
-        document
-          .getElementById("prevPage")
-          .addEventListener("click", function () {
-            if (currentPage > 1) {
-              currentPage--;
-              renderTable();
-            }
-          });
-
-        document
-          .getElementById("nextPage")
-          .addEventListener("click", function () {
-            const totalPages = Math.ceil(
-              filteredSubscribers.length / rowsPerPage
-            );
-            if (currentPage < totalPages) {
-              currentPage++;
-              renderTable();
-            }
-          });
-
-        // Refresh button
-        document
-          .getElementById("refreshBtn")
-          .addEventListener("click", loadSubscribers);
-
-        // Export button
-        document
-          .getElementById("exportBtn")
-          .addEventListener("click", exportSubscribers);
-
-        // Message template selection
-        document
-          .getElementById("messageTemplate")
-          .addEventListener("change", function () {
-            if (this.value) {
-              applyTemplate(this.value);
-            }
-          });
-
-        // Schedule message checkbox
-        document
-          .getElementById("scheduleMessage")
-          .addEventListener("change", function () {
-            document.getElementById("scheduleTime").disabled = !this.checked;
-          });
-
-        // Message form submission
-        document
-          .getElementById("messageForm")
-          .addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            const subject = document.getElementById("subject").value.trim();
-            const text = document.getElementById("messageText").value.trim();
-            const scheduled =
-              document.getElementById("scheduleMessage").checked;
-            const scheduleTime = document.getElementById("scheduleTime").value;
-
-            if (!subject || !text) {
-              showAlert("אנא מלא את כל השדות הנדרשים", "warning");
-              return;
-            }
-
-            if (scheduled && !scheduleTime) {
-              showAlert("אנא בחר זמן לתזמון השליחה", "warning");
-              return;
-            }
-
-            const formData = { subject, text };
-            if (scheduled) {
-              formData.scheduleTime = scheduleTime;
-            }
-
-            sendMessage(formData);
-          });
-
-        // Save draft button
-        document
-          .getElementById("saveDraftBtn")
-          .addEventListener("click", function () {
-            const subject = document.getElementById("subject").value;
-            const content = document.getElementById("messageText").value;
-
-            if (subject || content) {
-              localStorage.setItem(
-                "messageDraft",
-                JSON.stringify({ subject, content })
-              );
-              showAlert("הטיוטה נשמרה בהצלחה", "success");
-            } else {
-              showAlert("אין תוכן לשמירה", "warning");
-            }
-          });
-
-        // Load draft on page load
-        const savedDraft = localStorage.getItem("messageDraft");
-        if (savedDraft) {
-          const draft = JSON.parse(savedDraft);
-          document.getElementById("subject").value = draft.subject || "";
-          document.getElementById("messageText").value = draft.content || "";
+        console.log(`מאזין לשינויים בנתיב: ${leadsPath}`);
+        const q = query(collection(db, leadsPath));
+        
+        // ביטול האזנה קודמת אם קיימת
+        if (leadsUnsubscribe) {
+            leadsUnsubscribe();
         }
 
-        // Preview button
-        document
-          .getElementById("previewBtn")
-          .addEventListener("click", showPreview);
+        leadsUnsubscribe = onSnapshot(q, (snapshot) => {
+            allLeads = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // מיון: חדשים קודם
+            allLeads.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            
+            console.log(`התקבלו ${allLeads.length} לידים.`);
+            updateUI(allLeads);
+            showLoading(false); // הסתר טעינה רק אחרי קבלת נתונים
+        }, (err) => {
+            console.error("שגיאה בהאזנה ל-Firestore:", err);
+            showAlert("אירעה שגיאה בטעינת הנתונים.", "error");
+            showLoading(false);
+        });
+    }
 
-        // Close preview modal
-        document
-          .getElementById("closePreview")
-          .addEventListener("click", function () {
-            document.getElementById("previewModal").classList.add("hidden");
-          });
+    /** אתחול אפליקציה */
+    async function initializeAppAndAuth() {
+        try {
+            console.log("מתחיל אתחול Firebase...");
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
 
-        // Delete modal handlers
-        document
-          .getElementById("cancelDelete")
-          .addEventListener("click", function () {
-            document.getElementById("deleteModal").classList.add("hidden");
-          });
+            // האזנה לשינויי ססטוס אימות
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("משתמש מאומת:", user.uid);
+                    userId = user.uid;
+                    isAuthReady = true;
+                    document.getElementById('userName').textContent = user.isAnonymous ? 'משתמש אנונימי' : (user.displayName || user.email || 'ישראל ישראלי');
+                    document.getElementById('userIdDisplay').textContent = userId;
+                    
+                    // זה המקום הנכון להתחיל להאזין לנתונים
+                    attachLeadListener();
+                } else {
+                    console.log("משתמש לא מאומת.");
+                    userId = null;
+                    isAuthReady = false;
+                    showLoading(false);
+                    // אם צריך, אפשר להציג כאן מסך כניסה
+                }
+            });
 
-        // Close modals when clicking outside
-        document
-          .getElementById("deleteModal")
-          .addEventListener("click", function (e) {
-            if (e.target === this) {
-              this.classList.add("hidden");
+            // ביצוע התחברות
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                console.log("מתחבר עם טוקן מותאם...");
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                console.log("מתחבר אנונימית...");
+                await signInAnonymously(auth);
             }
-          });
+            
+        } catch (err) {
+            console.error("שגיאה קריטית באתחול Firebase:", err);
+            document.getElementById("loadingOverlay").innerHTML = `<div class="text-center p-6 bg-white rounded-xl shadow-2xl"><h3 class="text-lg font-bold text-red-600">שגיאת התחברות</h3><p class="text-gray-700 mt-2">לא ניתן היה להתחבר ל-Firebase. בדוק את הגדרות הרשת או את מפתח ה-API.</p><p class_:"text-xs text-gray-500 mt-4">${err.message}</p></div>`;
+            showLoading(true); // להשאיר את שכבת השגיאה גלויה
+        }
+    }
 
-        document
-          .getElementById("previewModal")
-          .addEventListener("click", function (e) {
-            if (e.target === this) {
-              this.classList.add("hidden");
-            }
-          });
-      });
-    </script>
-  </body>
+    // --- הפעלה ---
+    document.addEventListener('DOMContentLoaded', () => {
+        showLoading(true);
+        initializeAppAndAuth();
+    });
+
+</script>
 </html>
